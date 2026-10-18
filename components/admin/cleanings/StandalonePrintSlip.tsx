@@ -229,9 +229,9 @@ export function StandalonePrintSlip({ cleaning }: StandalonePrintSlipProps) {
           </div>
 
           {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ 2: ΚΩΔΙΚΟΣ ΕΙΣΟΔΟΥ & ΟΔΗΓΙΕΣ (ΜΕΓΑΛΟ BOLD ΠΛΑΙΣΙΟ) ── */}
-          <div className="border-2 border-amber-400 bg-amber-50/70 rounded-xl p-4 print:border-2 print:border-black print:bg-white space-y-2">
-            <div className="flex items-center gap-2 text-amber-950 font-black text-xs uppercase tracking-wider border-b border-amber-200 pb-1 print:text-black">
-              <Key className="w-4 h-4 text-amber-800" />
+          <div className="border border-slate-300 bg-slate-50/70 rounded-xl p-4 print:border-black print:bg-white space-y-2">
+            <div className="flex items-center gap-2 text-slate-900 font-black text-xs uppercase tracking-wider border-b border-slate-200 pb-1.5 print:text-black">
+              <Key className="w-4 h-4 text-slate-700 print:text-black" />
               <span>2. Κωδικός Εισόδου & Οδηγίες Πρόσβασης (Κρίσιμη Πληροφορία)</span>
             </div>
 
@@ -239,13 +239,13 @@ export function StandalonePrintSlip({ cleaning }: StandalonePrintSlipProps) {
               <div className="text-xs font-bold text-slate-700">
                 Κωδικός Lockbox / Keypad / PIN:
               </div>
-              <div className="text-2xl font-mono font-black text-slate-900 bg-white border-2 border-amber-400 px-4 py-2 rounded-xl inline-block print:border-black print:text-2xl">
+              <div className="text-2xl font-mono font-black text-slate-900 bg-white border border-slate-300 px-4 py-2 rounded-xl inline-block print:border-black print:text-2xl">
                 {cleaning.access_code || 'Κλειδί από ρεσεψιόν / Χωρίς κωδικό'}
               </div>
             </div>
 
             {cleaning.entry_instructions && (
-              <div className="text-xs text-slate-800 bg-white p-3 rounded-lg border border-amber-300 mt-2 leading-relaxed print:border-black">
+              <div className="text-xs text-slate-800 bg-white p-3 rounded-lg border border-slate-200 mt-2 leading-relaxed print:border-black">
                 <span className="font-black text-slate-900">Οδηγίες Πρόσβασης:</span>{' '}
                 {cleaning.entry_instructions}
               </div>

@@ -21,10 +21,20 @@ import {
   History,
   Briefcase,
   UserCheck,
+  Home,
+  Building2,
 } from 'lucide-react';
 import { LogoIcon } from '@/components/Logo';
 
 const navGroups = [
+  {
+    label: 'Καθαρισμοί',
+    items: [
+      { href: '/admin/cleanings/airbnb', label: 'Airbnb', icon: Home },
+      { href: '/admin/cleanings/hotels', label: 'Ξενοδοχεία', icon: Building2 },
+      { href: '/admin/cleanings/clients', label: 'Πελάτες', icon: Users },
+    ],
+  },
   {
     label: 'Περιεχόμενο',
     items: [

@@ -367,3 +367,106 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--muted-light);
   letter-spacing: 0.05em;
 }
+
+/* ──────────────────────────────────────────────────────────────
+   PRINT STYLES FOR CLEANING DISPATCH SLIPS & RUN SHEETS
+   ────────────────────────────────────────────────────────────── */
+@media print {
+  @page {
+    margin: 8mm;
+    size: A4 portrait;
+  }
+
+  html,
+  body {
+    background: white !important;
+    color: #000000 !important;
+    font-size: 11pt;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Completely hide all screen-only chrome and dashboard content */
+  aside,
+  header,
+  nav,
+  button,
+  [role="button"],
+  .no-print,
+  .print\:hidden,
+  [class*="print:hidden"],
+  [data-print-hidden="true"],
+  #admin-sidebar,
+  #admin-topbar,
+  #admin-dashboard-view,
+  #admin-dashboard-content {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Reset main layout wrappers so they don't clip or add margins */
+  main,
+  main > div {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+
+  /* Printable Modal resets */
+  .printable-modal-overlay {
+    position: static !important;
+    inset: auto !important;
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    display: block !important;
+    overflow: visible !important;
+    z-index: auto !important;
+  }
+
+  .printable-modal-card {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    border-radius: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    transform: none !important;
+  }
+
+  /* Vertical Dispatch Card print rules */
+  .vertical-dispatch-card {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    background: white !important;
+    color: black !important;
+    margin-bottom: 22px !important;
+    display: block !important;
+  }
+
+  .print-break-after {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  /* Force high contrast for lines and boxes */
+  .print-border-dark {
+    border-color: #0f172a !important;
+  }
+}

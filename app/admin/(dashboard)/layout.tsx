@@ -16,7 +16,7 @@ export default async function AdminLayout({
 
   return (
     <div
-      className="h-screen h-[100dvh] bg-slate-100 flex overflow-hidden w-full max-w-full"
+      className="h-screen h-[100dvh] bg-slate-100 flex overflow-hidden w-full max-w-full print:h-auto print:min-h-0 print:overflow-visible print:bg-white print:block"
       style={{ fontFamily: 'var(--font-source-sans), system-ui, sans-serif' }}
     >
       <AdminShell user={user}>

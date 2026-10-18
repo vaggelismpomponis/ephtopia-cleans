@@ -19,6 +19,8 @@ export function AdminShell({ user, children }: AdminShellProps) {
   const pathname = usePathname();
   const isSuperAdmin = user.email === SUPER_ADMIN_EMAIL;
   const isEditorPage = !!pathname.match(/^\/admin\/(hero|problem|services|testimonials|pricing|faq|lead-form|footer)$/);
+  const isCleaningsPage = pathname.startsWith('/admin/cleanings');
+  const isWidePage = isEditorPage || isCleaningsPage;
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -52,13 +54,17 @@ export function AdminShell({ user, children }: AdminShellProps) {
       </AnimatePresence>
 
       {/* Sidebar */}
-      <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isSuperAdmin={isSuperAdmin} />
+      <div id="admin-sidebar" className="no-print print:hidden">
+        <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} isSuperAdmin={isSuperAdmin} />
+      </div>
 
       {/* Main content */}
-      <div className="flex flex-col flex-1 overflow-hidden min-w-0 w-full">
-        <TopBar user={user} onMenuClick={() => setMobileOpen(true)} />
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3.5 sm:p-6 lg:p-8">
-          <div className={`${isEditorPage ? 'max-w-[1800px]' : 'max-w-4xl'} mx-auto w-full`}>
+      <div className="flex flex-col flex-1 overflow-hidden min-w-0 w-full print:block print:overflow-visible print:w-full">
+        <div id="admin-topbar" className="no-print print:hidden">
+          <TopBar user={user} onMenuClick={() => setMobileOpen(true)} />
+        </div>
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3.5 sm:p-6 lg:p-8 print:p-0 print:m-0 print:overflow-visible print:bg-white print:block">
+          <div className={`${isWidePage ? 'max-w-[1700px]' : 'max-w-4xl'} mx-auto w-full print:max-w-none print:w-full print:m-0 print:p-0`}>
             {children}
           </div>
         </main>

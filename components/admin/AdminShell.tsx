@@ -61,7 +61,7 @@ export function AdminShell({ user, children }: AdminShellProps) {
       {/* Main content */}
       <div className="flex flex-col flex-1 overflow-hidden min-w-0 w-full print:block print:overflow-visible print:w-full">
         <div id="admin-topbar" className="no-print print:hidden">
-          <TopBar user={user} onMenuClick={() => setMobileOpen(true)} />
+          <TopBar user={user} onMenuClick={() => setMobileOpen(true)} isSuperAdmin={isSuperAdmin} />
         </div>
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-3.5 sm:p-6 lg:p-8 print:p-0 print:m-0 print:overflow-visible print:bg-white print:block">
           <div className={`${isWidePage ? 'max-w-[1700px]' : 'max-w-4xl'} mx-auto w-full print:max-w-none print:w-full print:m-0 print:p-0`}>

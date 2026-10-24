@@ -7,7 +7,6 @@ import {
   MapPin,
   Key,
   Truck,
-  Sparkles,
   AlertTriangle,
 } from 'lucide-react';
 import type { CleaningRecord } from '@/lib/types/cleanings';
@@ -334,83 +333,7 @@ export function StandalonePrintSlip({ cleaning }: StandalonePrintSlipProps) {
             </div>
           </div>
 
-          {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ 5: ΓΙΑ ΤΗΝ ΚΑΘΑΡΙΣΤΡΙΑ (ΟΔΗΓΙΕΣ & CHECKLIST) ── */}
-          <div className="border border-slate-300 rounded-xl p-4 space-y-2 print:border-black">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-1.5">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-emerald-700" />
-                <span className="text-xs font-black uppercase tracking-wider text-slate-900">
-                  5. Για την Καθαρίστρια: Οδηγίες & Έλεγχος Ποιότητας
-                </span>
-              </div>
-              <span className="text-[11px] font-bold text-slate-500">
-                Turnover Checklist
-              </span>
-            </div>
 
-            {cleaning.cleaning_instructions && (
-              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs text-slate-800 print:bg-white print:border-black">
-                <span className="font-bold text-slate-900">Ειδικές Παρατηρήσεις:</span>{' '}
-                {cleaning.cleaning_instructions}
-              </div>
-            )}
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs pt-1">
-              {[
-                'Αερισμός & απορρίμματα',
-                'Αλλαγή & στρώσιμο κρεβατιών',
-                'Απολύμανση μπάνιου',
-                'Καθαρισμός κουζίνας',
-                'Σκούπισμα & σφουγγάρισμα',
-                'Έλεγχος κλειδώματος & κλειδιά',
-              ].map((task) => (
-                <label
-                  key={task}
-                  className="flex items-center gap-2 text-slate-800 font-medium text-[11px]"
-                >
-                  <input
-                    type="checkbox"
-                    className="w-3.5 h-3.5 rounded border-slate-400 text-black pointer-events-none"
-                  />
-                  <span>[  ] {task}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ 6: ΥΠΟΓΡΑΦΕΣ & ΠΑΡΑΔΟΣΗ ── */}
-          <div className="border-t-2 border-slate-900 pt-3.5 grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-[10px] text-slate-500 uppercase font-black mb-1">
-                Ώρα Ολοκλήρωσης
-              </div>
-              <div className="h-8 border-b-2 border-slate-900 flex items-end justify-center font-mono font-bold text-xs">
-                ___ : ___
-              </div>
-            </div>
-
-            <div>
-              <div className="text-[10px] text-slate-500 uppercase font-black mb-1">
-                Υπογραφή Καθαρίστριας
-              </div>
-              <div className="h-8 border-b-2 border-slate-900 flex items-end justify-center text-xs text-slate-600 italic">
-                {cleaning.cleaner_name || '........................'}
-              </div>
-            </div>
-
-            <div>
-              <div className="text-[10px] text-slate-500 uppercase font-black mb-1">
-                Υπογραφή Οδηγού
-              </div>
-              <div className="h-8 border-b-2 border-slate-900 flex items-end justify-center text-xs text-slate-600 italic">
-                {cleaning.driver_name || '........................'}
-              </div>
-            </div>
-          </div>
-
-          <div className="text-[10px] text-slate-400 text-center pt-1 border-t border-slate-100">
-            * Σε περίπτωση αλλαγής κωδικού ή αδυναμίας εισόδου, καλέστε άμεσα στο κέντρο επιχειρήσεων Ephtopia Cleans.
-          </div>
         </div>
       </div>
     </div>

@@ -868,7 +868,7 @@ export function CleaningsView({
                       <div className="flex items-center justify-between">
                         <span className="text-slate-400">Ώρα & Ημέρα:</span>
                         <strong className="text-slate-900">
-                          {c.scheduled_time || '11:00-14:00'} ({new Date(c.scheduled_date).toLocaleDateString('el-GR', { day: 'numeric', month: 'short' })})
+                          {c.scheduled_time || '11:00 - 14:00'} ({new Date(c.scheduled_date).toLocaleDateString('el-GR', { day: 'numeric', month: 'short' })})
                         </strong>
                       </div>
                       <div className="flex items-center justify-between">

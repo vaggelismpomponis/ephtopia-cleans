@@ -126,3 +126,38 @@ export const CLEANING_PRIORITY_CONFIG: Record<
     border: 'border-rose-300',
   },
 };
+
+/** Quick-access time slots for Airbnb / hotel cleanings */
+export const QUICK_CLEANING_HOURS = [
+  '10:00 - 14:00',
+  '10:30 - 14:00',
+  '11:00 - 13:00',
+  '11:00 - 14:00',
+  '11:00 - 15:00',
+  '11:30 - 14:30',
+  '12:00 - 15:00',
+  '12:00 - 16:00',
+] as const;
+
+/** Extended options for datalist autocomplete / suggested hours */
+export const ALL_CLEANING_HOURS_OPTIONS = [
+  '09:00 - 12:00',
+  '09:30 - 13:00',
+  '10:00 - 13:00',
+  '10:00 - 14:00',
+  '10:30 - 13:30',
+  '10:30 - 14:00',
+  '11:00 - 13:00',
+  '11:00 - 13:30',
+  '11:00 - 14:00',
+  '11:00 - 15:00',
+  '11:30 - 14:00',
+  '11:30 - 14:30',
+  '12:00 - 15:00',
+  '12:00 - 16:00',
+  '13:00 - 16:00',
+  '14:00 - 17:00',
+  '15:00 - 18:00',
+  'Ελεύθερο ωράριο',
+] as const;
+

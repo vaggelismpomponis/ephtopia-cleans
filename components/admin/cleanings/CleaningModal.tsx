@@ -22,13 +22,15 @@ import {
   Euro,
   FileText,
 } from 'lucide-react';
-import type {
-  CleaningRecord,
-  CleaningCategory,
-  CleaningClient,
-  CleaningProperty,
-  CleaningStatus,
-  CleaningPriority,
+import {
+  type CleaningRecord,
+  type CleaningCategory,
+  type CleaningClient,
+  type CleaningProperty,
+  type CleaningStatus,
+  type CleaningPriority,
+  QUICK_CLEANING_HOURS,
+  ALL_CLEANING_HOURS_OPTIONS,
 } from '@/lib/types/cleanings';
 import { saveCleaning } from '@/app/actions/cleanings';
 import { CustomSelect } from './CustomSelect';
@@ -567,22 +569,37 @@ export function CleaningModal({
                   </label>
                   <input
                     type="text"
+                    list="cleaning-hours-presets"
                     value={scheduledTime}
                     onChange={(e) => setScheduledTime(e.target.value)}
-                    placeholder="π.χ. 11:00 - 14:00"
+                    placeholder="π.χ. 10:30 - 14:00"
                     className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 focus:outline-none focus:border-teal"
                   />
-                  <div className="flex flex-wrap gap-1 mt-1.5 text-[10px]">
-                    {['11:00-13:00', '11:00-14:00', '12:00-15:00'].map((t) => (
-                      <button
-                        key={t}
-                        type="button"
-                        onClick={() => setScheduledTime(t)}
-                        className="text-slate-500 hover:text-teal underline cursor-pointer"
-                      >
-                        {t}
-                      </button>
+                  <datalist id="cleaning-hours-presets">
+                    {ALL_CLEANING_HOURS_OPTIONS.map((t) => (
+                      <option key={t} value={t} />
                     ))}
+                  </datalist>
+                  <div className="flex flex-wrap gap-1 mt-1.5">
+                    {QUICK_CLEANING_HOURS.map((t) => {
+                      const isSelected =
+                        scheduledTime.trim() === t ||
+                        scheduledTime.replace(/\s+/g, '') === t.replace(/\s+/g, '');
+                      return (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setScheduledTime(t)}
+                          className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors cursor-pointer border ${
+                            isSelected
+                              ? 'bg-teal text-white border-teal font-bold'
+                              : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
+                          }`}
+                        >
+                          {t}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 

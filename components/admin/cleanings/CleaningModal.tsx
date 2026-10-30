@@ -22,13 +22,15 @@ import {
   Euro,
   FileText,
 } from 'lucide-react';
+import type {
+  CleaningRecord,
+  CleaningCategory,
+  CleaningClient,
+  CleaningProperty,
+  CleaningStatus,
+  CleaningPriority,
+} from '@/lib/types/cleanings';
 import {
-  type CleaningRecord,
-  type CleaningCategory,
-  type CleaningClient,
-  type CleaningProperty,
-  type CleaningStatus,
-  type CleaningPriority,
   QUICK_CLEANING_HOURS,
   ALL_CLEANING_HOURS_OPTIONS,
 } from '@/lib/types/cleanings';

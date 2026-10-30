@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -64,8 +64,28 @@ export function CleaningsView({
   const router = useRouter();
   const [cleanings, setCleanings] = useState<CleaningRecord[]>(initialCleanings);
 
-  // View mode: 'table' or 'grid'
-  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
+  // View mode: 'table' or 'grid' (defaults to 'grid' - cards)
+  const [viewMode, setViewMode] = useState<'table' | 'grid'>('grid');
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('ephtopia-cleanings-view-mode');
+      if (saved === 'table' || saved === 'grid') {
+        setViewMode(saved);
+      }
+    } catch {
+      // Ignore
+    }
+  }, []);
+
+  const handleSetViewMode = (mode: 'table' | 'grid') => {
+    setViewMode(mode);
+    try {
+      localStorage.setItem('ephtopia-cleanings-view-mode', mode);
+    } catch {
+      // Ignore
+    }
+  };
 
   // Dates
   const todayStr = new Date().toISOString().split('T')[0];
@@ -537,27 +557,27 @@ export function CleaningsView({
               />
             </div>
 
-            {/* View Mode Switcher: Table vs Cards */}
+            {/* View Mode Switcher: Cards vs Table (Cards is default) */}
             <div className="hidden sm:flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/60">
               <button
                 type="button"
-                onClick={() => setViewMode('table')}
-                title="Προβολή Πίνακα"
-                className={`p-1.5 rounded-lg transition-all cursor-pointer ${
-                  viewMode === 'table' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-400 hover:text-slate-700'
-                }`}
-              >
-                <List className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode('grid')}
+                onClick={() => handleSetViewMode('grid')}
                 title="Προβολή Καρτών"
                 className={`p-1.5 rounded-lg transition-all cursor-pointer ${
                   viewMode === 'grid' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-400 hover:text-slate-700'
                 }`}
               >
                 <LayoutGrid className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSetViewMode('table')}
+                title="Προβολή Πίνακα"
+                className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                  viewMode === 'table' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-400 hover:text-slate-700'
+                }`}
+              >
+                <List className="w-4 h-4" />
               </button>
             </div>
           </div>

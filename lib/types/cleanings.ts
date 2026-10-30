@@ -139,7 +139,24 @@ export const QUICK_CLEANING_HOURS = [
   '12:00 - 16:00',
 ] as const;
 
-/** Extended options for datalist autocomplete / suggested hours */
+/** Checks if an access code is actually set and not an empty/fallback string */
+export function hasAccessPin(code?: string | null): boolean {
+  if (!code) return false;
+  const trimmed = code.trim();
+  if (!trimmed) return false;
+  const lower = trimmed.toLowerCase();
+  return (
+    lower !== 'χωρίς' &&
+    lower !== 'χωρις' &&
+    lower !== 'χωρίς κωδικό' &&
+    lower !== 'χωρις κωδικο' &&
+    lower !== '-' &&
+    lower !== 'none' &&
+    lower !== 'no' &&
+    lower !== 'n/a'
+  );
+}
+
 export const ALL_CLEANING_HOURS_OPTIONS = [
   '09:00 - 12:00',
   '09:30 - 13:00',

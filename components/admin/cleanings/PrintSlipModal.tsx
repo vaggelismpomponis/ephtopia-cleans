@@ -21,7 +21,7 @@ import {
   FileText,
 } from 'lucide-react';
 import type { CleaningRecord } from '@/lib/types/cleanings';
-import { CLEANING_PRIORITY_CONFIG } from '@/lib/types/cleanings';
+import { CLEANING_PRIORITY_CONFIG, hasAccessPin } from '@/lib/types/cleanings';
 
 interface PrintSlipModalProps {
   isOpen: boolean;
@@ -292,9 +292,11 @@ export function PrintSlipModal({
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <span className="font-mono font-bold bg-slate-100 text-slate-800 border border-slate-300 px-2 py-0.5 rounded">
-                          Lockbox: {item.access_code || 'Χωρίς'}
-                        </span>
+                        {hasAccessPin(item.access_code) && (
+                          <span className="font-mono font-bold bg-slate-100 text-slate-800 border border-slate-300 px-2 py-0.5 rounded">
+                            Lockbox: {item.access_code}
+                          </span>
+                        )}
                         <span className="font-bold text-slate-700">
                           {item.scheduled_time || '11:00 - 14:00'}
                         </span>
@@ -371,7 +373,7 @@ export function PrintSlipModal({
                     {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ 1: ΣΤΟΙΧΕΙΑ ΚΑΤΑΛΥΜΑΤΟΣ & ΤΟΠΟΘΕΣΙΑ ── */}
                     <div className="border border-slate-300 rounded-xl p-4 bg-slate-50/70 print:bg-white print:border-black space-y-2.5">
                       <div className="text-[11px] font-black text-slate-500 uppercase tracking-wider border-b border-slate-200 pb-1">
-                        1. Στοιχεία Καταλύματος & Τοποθεσίας
+                        Στοιχεία Καταλύματος & Τοποθεσίας
                       </div>
 
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -410,34 +412,38 @@ export function PrintSlipModal({
                       </div>
                     </div>
 
-                    {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ 2: ΚΩΔΙΚΟΣ ΕΙΣΟΔΟΥ & ΟΔΗΓΙΕΣ (ΜΕΓΑΛΟ BOLD ΠΛΑΙΣΙΟ) ── */}
-                    <div className="border border-slate-300 bg-slate-50/70 rounded-xl p-4 print:border-black print:bg-white space-y-2">
-                      <div className="flex items-center gap-2 text-slate-900 font-black text-xs uppercase tracking-wider border-b border-slate-200 pb-1.5 print:text-black">
-                        <Key className="w-4 h-4 text-slate-700 print:text-black" />
-                        <span>2. Κωδικός Εισόδου & Οδηγίες Πρόσβασης (Κρίσιμη Πληροφορία)</span>
+                    {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ: ΚΩΔΙΚΟΣ ΕΙΣΟΔΟΥ & ΟΔΗΓΙΕΣ ΠΡΟΣΒΑΣΗΣ (ΜΟΝΟ ΑΝ ΥΠΑΡΧΟΥΝ) ── */}
+                    {(hasAccessPin(rec.access_code) || !!rec.entry_instructions?.trim()) && (
+                      <div className="border border-slate-300 bg-slate-50/70 rounded-xl p-4 print:border-black print:bg-white space-y-2">
+                        <div className="flex items-center gap-2 text-slate-900 font-black text-xs uppercase tracking-wider border-b border-slate-200 pb-1.5 print:text-black">
+                          <Key className="w-4 h-4 text-slate-700 print:text-black" />
+                          <span>Κωδικός Εισόδου & Οδηγίες Πρόσβασης (Κρίσιμη Πληροφορία)</span>
+                        </div>
+
+                        {hasAccessPin(rec.access_code) && (
+                          <div className="space-y-1.5 pt-1">
+                            <div className="text-xs font-bold text-slate-700">
+                              Κωδικός Lockbox / Keypad / PIN:
+                            </div>
+                            <div className="text-2xl font-mono font-black text-slate-900 bg-white border border-slate-300 px-4 py-2 rounded-xl inline-block print:border-black print:text-2xl">
+                              {rec.access_code}
+                            </div>
+                          </div>
+                        )}
+
+                        {rec.entry_instructions?.trim() && (
+                          <div className="text-xs text-slate-800 bg-white p-3 rounded-lg border border-slate-200 mt-2 leading-relaxed print:border-black">
+                            <span className="font-black text-slate-900">Οδηγίες Πρόσβασης:</span>{' '}
+                            {rec.entry_instructions}
+                          </div>
+                        )}
                       </div>
+                    )}
 
-                      <div className="space-y-1.5 pt-1">
-                        <div className="text-xs font-bold text-slate-700">
-                          Κωδικός Lockbox / Keypad / PIN:
-                        </div>
-                        <div className="text-2xl font-mono font-black text-slate-900 bg-white border border-slate-300 px-4 py-2 rounded-xl inline-block print:border-black print:text-2xl">
-                          {rec.access_code || 'Κλειδί από ρεσεψιόν / Χωρίς κωδικό'}
-                        </div>
-                      </div>
-
-                      {rec.entry_instructions && (
-                        <div className="text-xs text-slate-800 bg-white p-3 rounded-lg border border-slate-200 mt-2 leading-relaxed print:border-black">
-                          <span className="font-black text-slate-900">Οδηγίες Πρόσβασης:</span>{' '}
-                          {rec.entry_instructions}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ 3: ΠΡΟΓΡΑΜΜΑΤΙΣΜΟΣ & ΟΜΑΔΑ ── */}
+                    {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ: ΠΡΟΓΡΑΜΜΑΤΙΣΜΟΣ & ΟΜΑΔΑ ── */}
                     <div className="border border-slate-300 rounded-xl p-4 bg-slate-50/70 print:bg-white print:border-black space-y-2">
                       <div className="text-[11px] font-black text-slate-500 uppercase tracking-wider border-b border-slate-200 pb-1">
-                        3. Προγραμματισμός & Ομάδα Εργασίας
+                        Προγραμματισμός & Ομάδα Εργασίας
                       </div>
 
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
@@ -481,7 +487,7 @@ export function PrintSlipModal({
                         <div className="flex items-center gap-2">
                           <Truck className="w-4 h-4 text-blue-700" />
                           <span className="text-xs font-black uppercase tracking-wider text-slate-900">
-                            4. Για τον Οδηγό: Παράδοση & Παραλαβή Ιματισμού
+                            Για τον Οδηγό: Παράδοση & Παραλαβή Ιματισμού
                           </span>
                         </div>
                         <span className="text-[11px] font-bold text-slate-500">

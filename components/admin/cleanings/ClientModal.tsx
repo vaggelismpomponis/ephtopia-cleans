@@ -366,7 +366,7 @@ export function ClientModal({
                           value={propAccessCode}
                           onChange={(e) => setPropAccessCode(e.target.value)}
                           placeholder="π.χ. Lockbox 4821#"
-                          className="w-full bg-white border border-amber-300 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-mono font-bold text-slate-900 focus:outline-none focus:border-amber-500"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-mono font-bold text-slate-900 focus:outline-none focus:border-teal"
                         />
                       </div>
 

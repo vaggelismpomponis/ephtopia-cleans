@@ -201,9 +201,9 @@ export function PropertyModal({
             </div>
 
             {/* Access Box */}
-            <div className="bg-amber-50/70 border-2 border-amber-300 rounded-2xl p-4 space-y-3">
-              <div className="flex items-center gap-2 text-amber-900 font-extrabold text-xs uppercase tracking-wider">
-                <Key className="w-4 h-4 text-amber-700" />
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+              <div className="flex items-center gap-2 text-slate-700 font-bold text-xs uppercase tracking-wider">
+                <Key className="w-4 h-4 text-slate-500" />
                 <span>Κωδικοί & Πρόσβαση (Για Οδηγό & Καθαρίστρια)</span>
               </div>
 
@@ -217,7 +217,7 @@ export function PropertyModal({
                     value={accessCode}
                     onChange={(e) => setAccessCode(e.target.value)}
                     placeholder="π.χ. Lockbox 4821#"
-                    className="w-full bg-white border border-amber-300 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-mono font-extrabold text-slate-900 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-mono font-extrabold text-slate-900 focus:outline-none focus:border-teal"
                   />
                 </div>
 
@@ -230,7 +230,7 @@ export function PropertyModal({
                     value={entryInstructions}
                     onChange={(e) => setEntryInstructions(e.target.value)}
                     placeholder="π.χ. Κουτί δίπλα στο ασανσέρ"
-                    className="w-full bg-white border border-amber-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-teal"
                   />
                 </div>
               </div>

@@ -382,7 +382,7 @@ export function CleaningModal({
                           </div>
                           <div className="text-[11px] text-slate-500 truncate">{prop.address}</div>
                           {prop.access_code && (
-                            <div className="text-[10px] font-mono text-amber-800 mt-1 font-bold">
+                            <div className="text-[10px] font-mono text-slate-600 mt-1 font-bold">
                               PIN: {prop.access_code}
                             </div>
                           )}
@@ -487,10 +487,10 @@ export function CleaningModal({
                 </div>
               </div>
 
-              {/* HIGHLIGHTED ACCESS / CODE BOX */}
-              <div className="bg-amber-50/70 border-2 border-amber-300 rounded-2xl p-4 space-y-3">
-                <div className="flex items-center gap-2 text-amber-900 font-extrabold text-xs uppercase tracking-wider">
-                  <Key className="w-4 h-4 text-amber-700" />
+              {/* ACCESS / CODE BOX */}
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+                <div className="flex items-center gap-2 text-slate-700 font-bold text-xs uppercase tracking-wider">
+                  <Key className="w-4 h-4 text-slate-500" />
                   <span>Κωδικός & Οδηγίες Πρόσβασης (Εκτυπώνεται στο Δελτίο)</span>
                 </div>
 
@@ -504,7 +504,7 @@ export function CleaningModal({
                       value={accessCode}
                       onChange={(e) => setAccessCode(e.target.value)}
                       placeholder="π.χ. Lockbox 4821# ή Κλειδί στη ρεσεψιόν"
-                      className="w-full bg-white border border-amber-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-mono font-extrabold text-slate-900 focus:outline-none focus:border-amber-500"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-mono font-extrabold text-slate-900 focus:outline-none focus:border-teal"
                     />
                   </div>
 
@@ -517,7 +517,7 @@ export function CleaningModal({
                       value={entryInstructions}
                       onChange={(e) => setEntryInstructions(e.target.value)}
                       placeholder="π.χ. Κουδούνι Ephtopia, το κουτί είναι δεξιά από το ασανσέρ"
-                      className="w-full bg-white border border-amber-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-amber-500"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-teal"
                     />
                   </div>
                 </div>

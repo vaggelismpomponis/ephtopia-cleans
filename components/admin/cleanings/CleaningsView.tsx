@@ -616,7 +616,7 @@ export function CleaningsView({
                     <th className="py-3.5 px-4 font-heading">Κατάλυμα & Όροφος</th>
                     <th className="py-3.5 px-4 font-heading">Ώρα & Ημερομηνία</th>
                     <th className="py-3.5 px-4 font-heading">Διεύθυνση / Χάρτης</th>
-                    <th className="py-3.5 px-4 font-heading bg-amber-50/50">Κωδικός Lockbox / PIN</th>
+                    <th className="py-3.5 px-4 font-heading">Κωδικός Lockbox / PIN</th>
                     <th className="py-3.5 px-4 font-heading">Πελάτης</th>
                     <th className="py-3.5 px-4 font-heading">Ομάδα</th>
                     <th className="py-3.5 px-4 font-heading text-center">Κατάσταση</th>
@@ -699,15 +699,15 @@ export function CleaningsView({
                         </td>
 
                         {/* Lockbox / Code with 1-click copy */}
-                        <td className="py-4 px-4 bg-amber-50/20">
+                        <td className="py-4 px-4">
                           {c.access_code ? (
                             <button
                               type="button"
                               onClick={(e) => handleCopyCode(c.id, c.access_code || '', e)}
                               title="Κάντε κλικ για αντιγραφή κωδικού"
-                              className="inline-flex items-center gap-1.5 bg-amber-100/70 hover:bg-amber-200/80 border border-amber-300 text-slate-900 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg transition-all cursor-pointer group/btn"
+                              className="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 text-slate-800 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg transition-all cursor-pointer group/btn"
                             >
-                              <Key className="w-3 h-3 text-amber-700" />
+                              <Key className="w-3 h-3 text-slate-500 group-hover/btn:text-teal transition-colors" />
                               <span>{c.access_code}</span>
                               {isCopied ? (
                                 <Check className="w-3 h-3 text-emerald-600 animate-in zoom-in" />
@@ -864,11 +864,11 @@ export function CleaningsView({
                       </div>
                     </div>
 
-                    {/* Lockbox Highlight Pill */}
-                    <div className="bg-amber-50/70 border border-amber-200 rounded-xl p-3 mb-3 flex items-center justify-between">
+                    {/* Lockbox Access Pill */}
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 mb-3 flex items-center justify-between">
                       <div className="flex items-center gap-2 min-w-0">
-                        <Key className="w-4 h-4 text-amber-700 shrink-0" />
-                        <span className="text-xs font-mono font-extrabold text-slate-900 truncate">
+                        <Key className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <span className={`text-xs font-mono truncate ${c.access_code ? 'font-bold text-slate-900' : 'text-slate-500 font-medium'}`}>
                           {c.access_code || 'Χωρίς κωδικό / Ρεσεψιόν'}
                         </span>
                       </div>
@@ -876,7 +876,7 @@ export function CleaningsView({
                         <button
                           type="button"
                           onClick={(e) => handleCopyCode(c.id, c.access_code || '', e)}
-                          className="text-xs font-bold text-amber-800 hover:text-amber-900 bg-white border border-amber-300 rounded-lg px-2 py-1 shadow-xs"
+                          className="text-xs font-bold text-slate-700 hover:text-slate-900 bg-white border border-slate-200 hover:border-slate-300 rounded-lg px-2 py-1 shadow-2xs transition-colors"
                         >
                           {isCopied ? 'Αντιγράφηκε!' : 'Αντιγραφή'}
                         </button>

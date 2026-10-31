@@ -612,16 +612,16 @@ export function ClientsManagement({ initialClients }: ClientsManagementProps) {
                               </div>
 
                               {/* Lockbox Code Box with Copy */}
-                              <div className="bg-amber-50/70 border border-amber-200 rounded-xl p-2.5 text-xs mb-2.5 flex items-center justify-between">
+                              <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs mb-2.5 flex items-center justify-between">
                                 <div className="flex items-center gap-1.5 font-mono font-bold text-slate-900 min-w-0">
-                                  <Key className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                                  <Key className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                                   <span className="truncate">{prop.access_code || 'Χωρίς κωδικό / Ρεσεψιόν'}</span>
                                 </div>
                                 {prop.access_code && (
                                   <button
                                     type="button"
                                     onClick={(e) => handleCopyCode(prop.id, prop.access_code || '', e)}
-                                    className="text-[10px] font-bold text-amber-800 bg-white border border-amber-300 hover:bg-amber-100 rounded-md px-1.5 py-0.5 shrink-0 shadow-2xs cursor-pointer"
+                                    className="text-[10px] font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-100 rounded-md px-1.5 py-0.5 shrink-0 shadow-2xs cursor-pointer transition-colors"
                                   >
                                     {isCopied ? 'Copied!' : 'Copy'}
                                   </button>

@@ -5,23 +5,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Printer,
   X,
-  MapPin,
   Key,
-  Calendar,
-  Clock,
-  User,
   Truck,
-  Building,
-  Home,
-  CheckSquare,
   AlertTriangle,
-  Layers,
-  Phone,
-  Check,
-  FileText,
 } from 'lucide-react';
 import type { CleaningRecord } from '@/lib/types/cleanings';
-import { CLEANING_PRIORITY_CONFIG, hasAccessPin } from '@/lib/types/cleanings';
+import {
+  CLEANING_PRIORITY_CONFIG,
+  hasAccessPin,
+  formatPropertyTitle,
+  formatFloor,
+  formatClientInfo,
+} from '@/lib/types/cleanings';
 
 interface PrintSlipModalProps {
   isOpen: boolean;
@@ -57,12 +52,6 @@ export function PrintSlipModal({
     ? [cleaning]
     : [];
 
-  /**
-   * High-reliability print handler:
-   * Uses an isolated hidden iframe containing ONLY the printable container HTML
-   * and linked stylesheets, guaranteeing that NOT A SINGLE PIXEL of the admin dashboard
-   * can ever leak into the printed document.
-   */
   const handlePrint = () => {
     const printArea = document.getElementById('print-dispatch-container');
     if (!printArea) {
@@ -70,7 +59,6 @@ export function PrintSlipModal({
       return;
     }
 
-    // Remove any previous print iframes
     const oldIframe = document.getElementById('clean-print-frame');
     if (oldIframe) {
       oldIframe.remove();
@@ -93,7 +81,6 @@ export function PrintSlipModal({
       return;
     }
 
-    // Copy all stylesheet links and inline style tags from current document
     const headStyles = Array.from(
       document.querySelectorAll('link[rel="stylesheet"], style')
     )
@@ -107,7 +94,7 @@ export function PrintSlipModal({
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Δελτίο Αποστολής · Ephtopia Cleans</title>
+        <title>Δελτία Αποστολής · Ephtopia Cleans</title>
         ${headStyles}
         <style>
           @page {
@@ -125,24 +112,31 @@ export function PrintSlipModal({
             color: #0f172a !important;
             padding: 0 !important;
             margin: 0 !important;
-            font-size: 10.5pt;
-            line-height: 1.4;
+            font-size: 10pt;
+            line-height: 1.35;
           }
           .vertical-dispatch-card {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
-            margin-bottom: 22px !important;
             border: 2px solid #0f172a !important;
             background: #ffffff !important;
-            border-radius: 12px !important;
-            padding: 18px !important;
+            border-radius: 8px !important;
+            padding: 16px !important;
+            margin-bottom: 20px !important;
           }
-          .page-break-card {
+          .print-break-after {
             page-break-after: always !important;
             break-after: page !important;
           }
           .print\\:hidden, button, [role="button"] {
             display: none !important;
+          }
+          table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+          }
+          th, td {
+            border-color: #cbd5e1 !important;
           }
         </style>
       </head>
@@ -168,24 +162,22 @@ export function PrintSlipModal({
 
   return (
     <AnimatePresence>
-      {/* Modal Backdrop: on screen fixed backdrop; in print static, unstyled & overflow-visible */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto print:static print:p-0 print:m-0 print:bg-white print:overflow-visible printable-modal-overlay">
-        {/* Modal Box */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto print:static print:p-0 print:m-0 print:bg-white print:overflow-visible printable-modal-overlay">
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.96 }}
-          transition={{ duration: 0.2 }}
-          className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-4xl overflow-hidden my-auto print:shadow-none print:border-none print:max-w-none print:m-0 print:p-0 print:w-full printable-modal-card flex flex-col max-h-[92vh] print:max-h-none print:h-auto"
+          exit={{ opacity: 0, scale: 0.98 }}
+          transition={{ duration: 0.15 }}
+          className="bg-white rounded-2xl shadow-xl border border-slate-200/90 w-full max-w-4xl overflow-hidden my-auto print:shadow-none print:border-none print:max-w-none print:m-0 print:p-0 print:w-full printable-modal-card flex flex-col max-h-[92vh] print:max-h-none print:h-auto"
         >
           {/* ── SCREEN ONLY CONTROLS HEADER (NEVER PRINTED) ── */}
-          <div className="bg-slate-900 text-white px-5 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-3 shrink-0 print:hidden no-print">
+          <div className="bg-slate-900 text-white px-5 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 shrink-0 print:hidden no-print border-b border-slate-800">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-teal/20 text-teal flex items-center justify-center font-bold">
-                <Printer className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-lg bg-teal/15 text-teal flex items-center justify-center font-bold border border-teal/20">
+                <Printer className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="font-extrabold text-base font-heading tracking-tight">
+                <h3 className="font-extrabold text-sm sm:text-base font-heading tracking-tight">
                   Προεπισκόπηση & Εκτύπωση Δελτίων
                 </h3>
                 <p className="text-xs text-slate-400">
@@ -196,16 +188,16 @@ export function PrintSlipModal({
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               {/* Toggle mode if both single cleaning and daily cleanings are present */}
               {cleaning && dailyCleanings && dailyCleanings.length > 0 && (
-                <div className="bg-slate-800 p-1 rounded-xl flex text-xs font-bold border border-slate-700">
+                <div className="bg-slate-800 p-0.5 rounded-lg flex text-xs font-bold border border-slate-700">
                   <button
                     type="button"
                     onClick={() => setPrintMode('single')}
-                    className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                       printMode === 'single'
-                        ? 'bg-teal text-white shadow-xs'
+                        ? 'bg-teal text-white shadow-2xs'
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
@@ -214,9 +206,9 @@ export function PrintSlipModal({
                   <button
                     type="button"
                     onClick={() => setPrintMode('daily')}
-                    className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                       printMode === 'daily'
-                        ? 'bg-teal text-white shadow-xs'
+                        ? 'bg-teal text-white shadow-2xs'
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
@@ -229,7 +221,7 @@ export function PrintSlipModal({
               <button
                 type="button"
                 onClick={handlePrint}
-                className="flex items-center gap-2 bg-gradient-to-r from-teal to-teal-dark hover:from-teal-dark hover:to-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-md hover:shadow-lg cursor-pointer"
+                className="flex items-center gap-1.5 bg-teal hover:bg-teal-dark text-white font-bold px-4 py-2 rounded-lg text-xs sm:text-sm transition-colors shadow-2xs cursor-pointer"
               >
                 <Printer className="w-4 h-4" />
                 <span>Εκτύπωση</span>
@@ -238,7 +230,7 @@ export function PrintSlipModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
+                className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                 title="Κλείσιμο"
               >
                 <X className="w-5 h-5" />
@@ -249,63 +241,99 @@ export function PrintSlipModal({
           {/* ── 100% VERTICAL DISPATCH CONTAINER (PRINTABLE AREA) ── */}
           <div
             id="print-dispatch-container"
-            className="p-4 sm:p-8 overflow-y-auto print:overflow-visible print:p-0 text-slate-900 bg-white flex-1 space-y-8 print:space-y-6"
+            className="p-4 sm:p-7 overflow-y-auto print:overflow-visible print:p-0 text-slate-900 bg-white flex-1 space-y-6 print:space-y-6"
           >
-            {/* When daily mode has multiple cleanings, show top executive summary banner */}
+            {/* When daily mode has multiple cleanings, show corporate route manifest table */}
             {!isSingle && itemsToRender.length > 1 && (
-              <div className="border-2 border-slate-900 rounded-2xl p-5 bg-slate-50 space-y-3 vertical-dispatch-card">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-300 pb-3">
+              <div className="border-2 border-slate-900 rounded-xl p-5 bg-white space-y-3 vertical-dispatch-card print:border-black print:rounded-none">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-slate-900 pb-3">
                   <div>
-                    <h2 className="text-lg font-black font-heading text-slate-900 uppercase">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base font-black font-heading text-slate-900 tracking-tight">
+                        EPHTOPIA <span className="text-emerald-700">CLEANS</span>
+                      </span>
+                      <span className="bg-slate-900 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                        ΠΡΟΓΡΑΜΜΑ ΗΜΕΡΑΣ
+                      </span>
+                    </div>
+                    <h2 className="text-sm sm:text-base font-black font-heading text-slate-900 uppercase mt-0.5">
                       ΗΜΕΡΗΣΙΟ ΠΡΟΓΡΑΜΜΑ ΔΡΟΜΟΛΟΓΙΩΝ & ΚΑΘΑΡΙΣΜΩΝ
                     </h2>
-                    <p className="text-xs text-slate-600">
-                      Συνοπτικός πίνακας αποστολών ημέρας · Ephtopia Cleans
+                    <p className="text-[11px] text-slate-500">
+                      Συνοπτικός πίνακας αποστολών · {selectedDate || new Date().toLocaleDateString('el-GR')}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <span className="text-xs font-black text-slate-900 bg-white border border-slate-300 px-3 py-1 rounded-lg">
+                  <div className="text-right shrink-0">
+                    <span className="text-xs font-black text-slate-900 bg-slate-100 border border-slate-300 px-3 py-1 rounded-md inline-block">
                       Σύνολο Αποστολών: {itemsToRender.length}
                     </span>
                   </div>
                 </div>
 
-                <div className="space-y-1.5 text-xs">
-                  {itemsToRender.map((item, idx) => (
-                    <div
-                      key={item.id}
-                      className="flex flex-wrap items-center justify-between gap-2 p-2 bg-white rounded-lg border border-slate-200"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[11px]">
-                          {idx + 1}
-                        </span>
-                        <strong className="text-slate-900 text-sm">
-                          {item.property_name}
-                        </strong>
-                        <span className="text-slate-700 font-bold bg-slate-100 px-2 py-0.5 rounded text-[11px]">
-                          {item.floor || 'Ισόγειο'}
-                        </span>
-                        <span className="text-slate-500 truncate max-w-[220px]">
-                          {item.address}
-                        </span>
-                      </div>
+                {/* Corporate Manifest Routing Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-300 bg-slate-50 text-slate-700 font-bold uppercase tracking-wider text-[11px]">
+                        <th className="py-2.5 px-3 w-8 text-center">#</th>
+                        <th className="py-2.5 px-3 font-heading">Κατάλυμα & Διεύθυνση</th>
+                        <th className="py-2.5 px-3 font-heading">Όροφος</th>
+                        <th className="py-2.5 px-3 font-heading">Lockbox / PIN</th>
+                        <th className="py-2.5 px-3 font-heading">Ωράριο</th>
+                        <th className="py-2.5 px-3 font-heading">Συνεργείο & Οδηγός</th>
+                        <th className="py-2.5 px-3 font-heading text-center w-16">Έλεγχος</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200">
+                      {itemsToRender.map((item, idx) => {
+                        const propTitle = formatPropertyTitle(item.property_name, item.address);
+                        const hasDistinctName =
+                          item.property_name &&
+                          item.property_name !== '-' &&
+                          item.property_name.trim() !== item.address?.trim();
 
-                      <div className="flex items-center gap-3">
-                        {hasAccessPin(item.access_code) && (
-                          <span className="font-mono font-bold bg-slate-100 text-slate-800 border border-slate-300 px-2 py-0.5 rounded">
-                            Lockbox: {item.access_code}
-                          </span>
-                        )}
-                        <span className="font-bold text-slate-700">
-                          {item.scheduled_time || '11:00 - 14:00'}
-                        </span>
-                        <span className="text-slate-500 text-[11px]">
-                          Καθ: {item.cleaner_name || '-'} / Οδηγ: {item.driver_name || '-'}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                        return (
+                          <tr key={item.id} className="hover:bg-slate-50/50">
+                            <td className="py-2.5 px-3 text-center font-bold text-slate-900 tabular-nums">
+                              {idx + 1}
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <div className="font-bold text-slate-900 text-xs">
+                                {propTitle}
+                              </div>
+                              {hasDistinctName && item.address && (
+                                <div className="text-[11px] text-slate-500 truncate max-w-[260px]">
+                                  {item.address} {item.area ? `· ${item.area}` : ''}
+                                </div>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3 font-medium text-slate-700">
+                              {formatFloor(item.floor)}
+                            </td>
+                            <td className="py-2.5 px-3">
+                              {hasAccessPin(item.access_code) ? (
+                                <span className="font-mono font-bold text-slate-900 bg-slate-100 border border-slate-300 px-2 py-0.5 rounded text-[11px]">
+                                  {item.access_code}
+                                </span>
+                              ) : (
+                                <span className="text-slate-400 font-medium">—</span>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3 font-semibold text-slate-800 whitespace-nowrap">
+                              {item.scheduled_time || '11:00 - 14:00'}
+                            </td>
+                            <td className="py-2.5 px-3 text-[11px] text-slate-600">
+                              <div>{item.cleaner_name && item.cleaner_name !== '-' ? `Καθ: ${item.cleaner_name}` : 'Καθ: —'}</div>
+                              <div>{item.driver_name && item.driver_name !== '-' ? `Οδηγ: ${item.driver_name}` : 'Οδηγ: —'}</div>
+                            </td>
+                            <td className="py-2.5 px-3 text-center">
+                              <span className="inline-block w-4 h-4 border border-slate-400 rounded-sm"></span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}
@@ -315,17 +343,20 @@ export function PrintSlipModal({
               itemsToRender.map((rec, index) => {
                 const priorityConfig = CLEANING_PRIORITY_CONFIG[rec.priority];
                 const isLast = index === itemsToRender.length - 1;
+                const propTitle = formatPropertyTitle(rec.property_name, rec.address);
+                const hasInstructions = !!rec.entry_instructions?.trim();
+                const hasPin = hasAccessPin(rec.access_code);
 
                 return (
                   /* ── SINGLE VERTICAL DISPATCH CARD (TOP-TO-BOTTOM LAYOUT) ── */
                   <div
                     key={rec.id}
-                    className={`vertical-dispatch-card bg-white border-2 border-slate-900 rounded-2xl p-5 sm:p-7 space-y-5 print:rounded-none print:border-2 print:border-black print:p-5 ${
+                    className={`vertical-dispatch-card bg-white border-2 border-slate-900 rounded-xl p-5 sm:p-6 space-y-4 print:rounded-none print:border-2 print:border-black print:p-5 ${
                       !isLast && !isSingle ? 'print-break-after' : ''
                     }`}
                   >
                     {/* Header */}
-                    <div className="border-b-2 border-slate-900 pb-3.5 flex items-start justify-between">
+                    <div className="border-b-2 border-slate-900 pb-3 flex items-start justify-between">
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-xl sm:text-2xl font-black font-heading tracking-tight text-slate-900">
@@ -340,13 +371,13 @@ export function PrintSlipModal({
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-slate-600 mt-1">
+                        <p className="text-xs text-slate-600 mt-0.5 font-medium">
                           Υπηρεσίες Επαγγελματικού Καθαρισμού & Διαχείρισης Ιματισμού
                         </p>
                       </div>
 
                       <div className="text-right shrink-0">
-                        <div className="inline-block px-3 py-1 bg-slate-100 border border-slate-300 rounded-lg text-xs font-black uppercase text-slate-900 mb-1">
+                        <div className="inline-block px-3 py-1 bg-slate-100 border border-slate-300 rounded-md text-xs font-black uppercase text-slate-900 mb-1">
                           {rec.category === 'airbnb' ? 'Κατάλυμα Airbnb' : 'Ξενοδοχείο'}
                         </div>
                         <div className="text-xs text-slate-500 font-mono font-bold">
@@ -357,7 +388,7 @@ export function PrintSlipModal({
 
                     {/* Priority Alert Banner if High/Urgent */}
                     {rec.priority !== 'normal' && (
-                      <div className="bg-rose-50 border-2 border-rose-500 rounded-xl p-3 flex items-center gap-3 text-rose-900 print:bg-white print:border-black">
+                      <div className="bg-rose-50 border-2 border-rose-500 rounded-lg p-3 flex items-center gap-3 text-rose-900 print:bg-white print:border-black">
                         <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />
                         <div>
                           <span className="font-black uppercase text-xs">
@@ -371,68 +402,63 @@ export function PrintSlipModal({
                     )}
 
                     {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ 1: ΣΤΟΙΧΕΙΑ ΚΑΤΑΛΥΜΑΤΟΣ & ΤΟΠΟΘΕΣΙΑ ── */}
-                    <div className="border border-slate-300 rounded-xl p-4 bg-slate-50/70 print:bg-white print:border-black space-y-2.5">
+                    <div className="border border-slate-300 rounded-lg p-3.5 bg-slate-50/60 print:bg-white print:border-black space-y-2">
                       <div className="text-[11px] font-black text-slate-500 uppercase tracking-wider border-b border-slate-200 pb-1">
                         Στοιχεία Καταλύματος & Τοποθεσίας
                       </div>
 
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <div>
-                          <span className="text-xs text-slate-500 block">Όνομα Καταλύματος:</span>
-                          <span className="text-lg font-black text-slate-900 font-heading">
-                            {rec.property_name}
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <span className="text-[11px] text-slate-500 block uppercase font-bold tracking-wider">
+                            Κατάλυμα:
                           </span>
+                          <h3 className="text-base sm:text-lg font-black text-slate-900 font-heading leading-tight">
+                            {propTitle}
+                          </h3>
+                          <p className="text-xs text-slate-600 mt-0.5 font-medium">
+                            {rec.address} {rec.area ? `· ${rec.area}` : ''}
+                          </p>
                         </div>
 
-                        {/* Floor info without border */}
-                        <div className="self-start sm:self-auto">
-                          <span className="text-xs text-slate-500 block sm:text-right">
+                        <div className="self-start sm:self-auto shrink-0 text-left sm:text-right">
+                          <span className="text-[11px] text-slate-500 block uppercase font-bold tracking-wider">
                             Όροφος / Διαμέρισμα:
                           </span>
-                          <span className="inline-block text-base font-black text-slate-900 print:text-black sm:text-right">
-                            {rec.floor || 'Ισόγειο'}
+                          <span className="text-sm font-bold text-slate-900 bg-white border border-slate-200/90 px-2.5 py-0.5 rounded inline-block print:border-black">
+                            {formatFloor(rec.floor)}
                           </span>
                         </div>
                       </div>
 
-                      <div className="grid sm:grid-cols-2 gap-2 pt-1 border-t border-slate-200 text-xs">
-                        <div>
-                          <span className="text-slate-500 font-bold">Διεύθυνση:</span>{' '}
-                          <strong className="text-slate-900 text-sm">
-                            {rec.address} {rec.area ? `· ${rec.area}` : ''}
-                          </strong>
-                        </div>
+                      <div className="pt-2 border-t border-slate-200 text-xs text-slate-700 flex flex-wrap items-center justify-between gap-2">
                         <div>
                           <span className="text-slate-500 font-bold">Πελάτης / Υπεύθυνος:</span>{' '}
-                          <strong className="text-slate-900">
-                            {rec.client_name}{' '}
-                            {rec.client_phone ? `(Τηλ: ${rec.client_phone})` : ''}
-                          </strong>
+                          <strong className="text-slate-900">{formatClientInfo(rec.client_name, rec.client_phone)}</strong>
                         </div>
                       </div>
                     </div>
 
                     {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ: ΚΩΔΙΚΟΣ ΕΙΣΟΔΟΥ & ΟΔΗΓΙΕΣ ΠΡΟΣΒΑΣΗΣ (ΜΟΝΟ ΑΝ ΥΠΑΡΧΟΥΝ) ── */}
-                    {(hasAccessPin(rec.access_code) || !!rec.entry_instructions?.trim()) && (
-                      <div className="border border-slate-300 bg-slate-50/70 rounded-xl p-4 print:border-black print:bg-white space-y-2">
-                        <div className="flex items-center gap-2 text-slate-900 font-black text-xs uppercase tracking-wider border-b border-slate-200 pb-1.5 print:text-black">
-                          <Key className="w-4 h-4 text-slate-700 print:text-black" />
+                    {(hasPin || hasInstructions) && (
+                      <div className="border-2 border-slate-900 bg-slate-50/50 rounded-lg p-3.5 print:border-black print:bg-white space-y-2">
+                        <div className="flex items-center gap-2 text-slate-900 font-black text-xs uppercase tracking-wider border-b border-slate-300 pb-1.5 print:text-black">
+                          <Key className="w-4 h-4 text-slate-700 print:text-black shrink-0" />
                           <span>Κωδικός Εισόδου & Οδηγίες Πρόσβασης (Κρίσιμη Πληροφορία)</span>
                         </div>
 
-                        {hasAccessPin(rec.access_code) && (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="text-xs font-bold text-slate-700">
+                        {hasPin && (
+                          <div className="space-y-1 pt-0.5">
+                            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block">
                               Κωδικός Lockbox / Keypad / PIN:
-                            </div>
-                            <div className="text-2xl font-mono font-black text-slate-900 bg-white border border-slate-300 px-4 py-2 rounded-xl inline-block print:border-black print:text-2xl">
+                            </span>
+                            <div className="text-2xl font-mono font-black text-slate-900 bg-white border-2 border-slate-900 px-4 py-1.5 rounded-lg inline-block print:border-black">
                               {rec.access_code}
                             </div>
                           </div>
                         )}
 
-                        {rec.entry_instructions?.trim() && (
-                          <div className="text-xs text-slate-800 bg-white p-3 rounded-lg border border-slate-200 mt-2 leading-relaxed print:border-black">
+                        {hasInstructions && (
+                          <div className="text-xs text-slate-800 bg-white p-2.5 rounded border border-slate-300 mt-1.5 leading-relaxed print:border-black">
                             <span className="font-black text-slate-900">Οδηγίες Πρόσβασης:</span>{' '}
                             {rec.entry_instructions}
                           </div>
@@ -441,14 +467,14 @@ export function PrintSlipModal({
                     )}
 
                     {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ: ΠΡΟΓΡΑΜΜΑΤΙΣΜΟΣ & ΟΜΑΔΑ ── */}
-                    <div className="border border-slate-300 rounded-xl p-4 bg-slate-50/70 print:bg-white print:border-black space-y-2">
+                    <div className="border border-slate-300 rounded-lg p-3.5 bg-slate-50/60 print:bg-white print:border-black space-y-2">
                       <div className="text-[11px] font-black text-slate-500 uppercase tracking-wider border-b border-slate-200 pb-1">
                         Προγραμματισμός & Ομάδα Εργασίας
                       </div>
 
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                         <div>
-                          <span className="text-slate-500 block">Ημερομηνία:</span>
+                          <span className="text-slate-500 block font-medium">Ημερομηνία:</span>
                           <strong className="text-slate-900 text-sm">
                             {new Date(rec.scheduled_date).toLocaleDateString('el-GR', {
                               weekday: 'short',
@@ -459,33 +485,33 @@ export function PrintSlipModal({
                         </div>
 
                         <div>
-                          <span className="text-slate-500 block">Ώρα Καθαρισμού:</span>
+                          <span className="text-slate-500 block font-medium">Ώρα Καθαρισμού:</span>
                           <strong className="text-slate-900 text-sm">
                             {rec.scheduled_time || '11:00 - 14:00'}
                           </strong>
                         </div>
 
                         <div>
-                          <span className="text-slate-500 block">Καθαρίστρια / Συνεργείο:</span>
+                          <span className="text-slate-500 block font-medium">Καθαρίστρια / Συνεργείο:</span>
                           <strong className="text-slate-900 text-sm">
-                            {rec.cleaner_name || 'Δεν έχει οριστεί'}
+                            {rec.cleaner_name && rec.cleaner_name !== '-' ? rec.cleaner_name : 'Δεν έχει οριστεί'}
                           </strong>
                         </div>
 
                         <div>
-                          <span className="text-slate-500 block">Οδηγός Μεταφοράς:</span>
+                          <span className="text-slate-500 block font-medium">Οδηγός Μεταφοράς:</span>
                           <strong className="text-slate-900 text-sm">
-                            {rec.driver_name || 'Δεν έχει οριστεί'}
+                            {rec.driver_name && rec.driver_name !== '-' ? rec.driver_name : 'Δεν έχει οριστεί'}
                           </strong>
                         </div>
                       </div>
                     </div>
 
-                    {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ 4: ΓΙΑ ΤΟΝ ΟΔΗΓΟ (ΙΜΑΤΙΣΜΟΣ & CHECKLIST) ── */}
-                    <div className="border border-slate-300 rounded-xl p-4 space-y-2 print:border-black">
+                    {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ: ΓΙΑ ΤΟΝ ΟΔΗΓΟ (ΙΜΑΤΙΣΜΟΣ & CHECKLIST) ── */}
+                    <div className="border border-slate-300 rounded-lg p-3.5 space-y-2 print:border-black">
                       <div className="flex items-center justify-between border-b border-slate-200 pb-1.5">
                         <div className="flex items-center gap-2">
-                          <Truck className="w-4 h-4 text-blue-700" />
+                          <Truck className="w-4 h-4 text-slate-700 print:text-black shrink-0" />
                           <span className="text-xs font-black uppercase tracking-wider text-slate-900">
                             Για τον Οδηγό: Παράδοση & Παραλαβή Ιματισμού
                           </span>
@@ -495,8 +521,8 @@ export function PrintSlipModal({
                         </span>
                       </div>
 
-                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs print:bg-white print:border-black">
-                        <span className="font-black text-slate-800 block mb-1">
+                      <div className="bg-slate-50 p-2.5 rounded border border-slate-200 text-xs print:bg-white print:border-black">
+                        <span className="font-black text-slate-800 block mb-0.5">
                           Απαιτούμενα Καθαρά Λευκά Είδη:
                         </span>
                         <p className="text-slate-900 font-bold text-sm">
@@ -504,25 +530,41 @@ export function PrintSlipModal({
                         </p>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
-                        <label className="flex items-center gap-2 text-slate-800 font-medium">
-                          <input
-                            type="checkbox"
-                            className="w-4 h-4 rounded border-slate-400 text-black pointer-events-none"
-                          />
-                          <span>[  ] Παράδοση καθαρών λευκών ειδών στο κατάλυμα</span>
-                        </label>
-                        <label className="flex items-center gap-2 text-slate-800 font-medium">
-                          <input
-                            type="checkbox"
-                            className="w-4 h-4 rounded border-slate-400 text-black pointer-events-none"
-                          />
-                          <span>[  ] Παραλαβή σάκου άπλυτων (Laundry Bag)</span>
-                        </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-0.5">
+                        <div className="flex items-center gap-2 text-slate-800 font-medium">
+                          <span className="w-4 h-4 border border-slate-400 rounded-sm inline-block shrink-0"></span>
+                          <span>Παράδοση καθαρών λευκών ειδών στο κατάλυμα</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-slate-800 font-medium">
+                          <span className="w-4 h-4 border border-slate-400 rounded-sm inline-block shrink-0"></span>
+                          <span>Παραλαβή σάκου άπλυτων (Laundry Bag)</span>
+                        </div>
                       </div>
                     </div>
 
-
+                    {/* ── ΚΑΘΕΤΗ ΕΝΟΤΗΤΑ: ΥΠΟΓΡΑΦΕΣ & ΟΛΟΚΛΗΡΩΣΗ ── */}
+                    <div className="grid grid-cols-3 gap-3 pt-2.5 border-t-2 border-slate-900 text-xs text-slate-700 print:border-black">
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-slate-500 block tracking-wider">
+                          Παραδόθηκε (Οδηγός):
+                        </span>
+                        <div className="h-6 border-b border-dashed border-slate-400 mt-1"></div>
+                      </div>
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-slate-500 block tracking-wider">
+                          Παραλήφθηκε / Ελέγχθηκε:
+                        </span>
+                        <div className="h-6 border-b border-dashed border-slate-400 mt-1"></div>
+                      </div>
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-slate-500 block tracking-wider">
+                          Ώρα Ολοκλήρωσης:
+                        </span>
+                        <div className="h-6 border-b border-dashed border-slate-400 mt-1 flex items-end justify-center font-mono font-bold text-slate-400 text-[11px]">
+                          ___ : ___
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 );
               })

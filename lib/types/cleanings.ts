@@ -157,6 +157,34 @@ export function hasAccessPin(code?: string | null): boolean {
   );
 }
 
+export function formatPropertyTitle(name?: string | null, address?: string | null): string {
+  const trimmed = name?.trim();
+  if (trimmed && trimmed !== '-' && trimmed !== '—' && trimmed.toLowerCase() !== 'χωρίς') {
+    return trimmed;
+  }
+  return address?.trim() || 'Κατάλυμα Airbnb';
+}
+
+export function formatFloor(floor?: string | null): string {
+  const trimmed = floor?.trim();
+  if (!trimmed || trimmed === '-' || trimmed === '—') {
+    return 'Ισόγειο';
+  }
+  return trimmed;
+}
+
+export function formatClientInfo(name?: string | null, phone?: string | null): string {
+  const trimmedName = name?.trim();
+  const hasName = trimmedName && trimmedName !== '-' && trimmedName !== '—';
+  const trimmedPhone = phone?.trim();
+  const hasPhone = trimmedPhone && trimmedPhone !== '-' && trimmedPhone !== '—';
+
+  if (hasName && hasPhone) return `${trimmedName} (Τηλ: ${trimmedPhone})`;
+  if (hasName) return trimmedName;
+  if (hasPhone) return `Τηλ: ${trimmedPhone}`;
+  return '—';
+}
+
 export const ALL_CLEANING_HOURS_OPTIONS = [
   '09:00 - 12:00',
   '09:30 - 13:00',

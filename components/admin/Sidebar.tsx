@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -15,6 +15,7 @@ import {
   UserPlus,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Layers,
   ExternalLink,
   X,
@@ -79,6 +80,57 @@ export function Sidebar({ mobileOpen = false, onClose, isSuperAdmin = false }: S
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
 
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
+    'Καθαρισμοί': true,
+    'Περιεχόμενο': false, // Collapsed by default as requested
+    'Λειτουργίες': true,
+  });
+
+  // Restore saved state from localStorage if available
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('ephtopia-sidebar-groups');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setOpenGroups((prev) => ({ ...prev, ...parsed }));
+      }
+    } catch {
+      // Ignore
+    }
+  }, []);
+
+  // Auto-expand group if current route is inside it
+  useEffect(() => {
+    navGroups.forEach((group) => {
+      const isCurrentGroupActive = group.items.some((item) => isActive(item.href, item.exact));
+      if (isCurrentGroupActive) {
+        setOpenGroups((prev) => {
+          if (prev[group.label]) return prev;
+          const next = { ...prev, [group.label]: true };
+          try {
+            localStorage.setItem('ephtopia-sidebar-groups', JSON.stringify(next));
+          } catch {
+            // Ignore
+          }
+          return next;
+        });
+      }
+    });
+  }, [pathname]);
+
+  const toggleGroup = (groupLabel: string) => {
+    setOpenGroups((prev) => {
+      const next = { ...prev, [groupLabel]: !prev[groupLabel] };
+      try {
+        localStorage.setItem('ephtopia-sidebar-groups', JSON.stringify(next));
+      } catch {
+        // Ignore
+      }
+      return next;
+    });
+  };
+
+
   const isActive = (href: string, exact?: boolean) => {
     if (exact) return pathname === href;
     return pathname === href || pathname.startsWith(href + '/');
@@ -121,53 +173,84 @@ export function Sidebar({ mobileOpen = false, onClose, isSuperAdmin = false }: S
       {/* Navigation */}
       <nav className="flex-1 px-2 py-4 overflow-y-auto">
         <div className="space-y-6">
-          {navGroups.map((group, idx) => (
-            <div key={group.label}>
-              {showLabels ? (
-                <div className="px-3 mb-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  {group.label}
-                </div>
-              ) : (
-                idx > 0 && <div className="mx-3 mb-2 border-t border-slate-100" />
-              )}
-              <div className="space-y-0.5">
-                {group.items.map((item) => {
-                  const active = isActive(item.href, item.exact);
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      title={!showLabels ? item.label : undefined}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
-                        active
-                          ? 'bg-teal/10 text-teal border border-teal/25'
-                          : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
+          {navGroups.map((group, idx) => {
+            const isExpanded = openGroups[group.label] ?? true;
+            return (
+              <div key={group.label}>
+                {showLabels ? (
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group.label)}
+                    className="w-full flex items-center justify-between px-3 py-1 mb-1 text-[11px] font-bold text-slate-400 hover:text-slate-800 uppercase tracking-wider rounded-lg hover:bg-slate-100/80 transition-all cursor-pointer group select-none"
+                    title={isExpanded ? `Σύμπτυξη ${group.label}` : `Ανάπτυξη ${group.label}`}
+                  >
+                    <span className="flex items-center gap-1.5 group-hover:text-slate-700 transition-colors">
+                      {group.label}
+                      {!isExpanded && (
+                        <span className="text-[10px] text-slate-400 font-normal lowercase tracking-normal">
+                          ({group.items.length})
+                        </span>
+                      )}
+                    </span>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 transition-transform duration-200 ${
+                        isExpanded ? 'rotate-0' : '-rotate-90'
                       }`}
+                    />
+                  </button>
+                ) : (
+                  idx > 0 && <div className="mx-3 mb-2 border-t border-slate-100" />
+                )}
+
+                <AnimatePresence initial={false}>
+                  {(isExpanded || !showLabels) && (
+                    <motion.div
+                      initial={showLabels ? { height: 0, opacity: 0 } : false}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      className="overflow-hidden space-y-0.5"
                     >
-                      <Icon
-                        className={`shrink-0 ${active ? 'text-teal' : 'text-slate-400 group-hover:text-slate-600'}`}
-                        style={{ width: '18px', height: '18px' }}
-                      />
-                      <AnimatePresence>
-                        {showLabels && (
-                          <motion.span
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.15 }}
-                            className="whitespace-nowrap"
+                      {group.items.map((item) => {
+                        const active = isActive(item.href, item.exact);
+                        const Icon = item.icon;
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            title={!showLabels ? item.label : undefined}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
+                              active
+                                ? 'bg-teal/10 text-teal border border-teal/25'
+                                : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
+                            }`}
                           >
-                            {item.label}
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </Link>
-                  );
-                })}
+                            <Icon
+                              className={`shrink-0 ${active ? 'text-teal' : 'text-slate-400 group-hover:text-slate-600'}`}
+                              style={{ width: '18px', height: '18px' }}
+                            />
+                            <AnimatePresence>
+                              {showLabels && (
+                                <motion.span
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  exit={{ opacity: 0 }}
+                                  transition={{ duration: 0.15 }}
+                                  className="whitespace-nowrap"
+                                >
+                                  {item.label}
+                                </motion.span>
+                              )}
+                            </AnimatePresence>
+                          </Link>
+                        );
+                      })}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Super-admin only: History */}
           {isSuperAdmin && (() => {

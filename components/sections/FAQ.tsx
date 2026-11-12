@@ -1,8 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import type { SiteContent, FAQItem } from "@/lib/get-content";
-import { fadeInUp, staggerContainer } from "@/lib/animations";
 import {
   Accordion,
   AccordionContent,
@@ -16,79 +15,66 @@ interface FAQProps {
   faqItems: FAQItem[];
 }
 
-export default function FAQ({ siteContent: initialContent, faqItems: initialFaq }: FAQProps) {
+export default function FAQ({
+  siteContent: initialContent,
+  faqItems: initialFaq,
+}: FAQProps) {
   const preview = useLivePreview();
   const siteContent = preview?.siteContent || initialContent;
   const faqItems = preview?.faqItems || initialFaq;
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqItems.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
+
+  const handleScrollToContact = () => {
+    document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section id="faq" className="section-padding bg-warm-white relative overflow-hidden">
-      {/* JSON-LD for FAQ */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
+    <section
+      id="faq"
+      className="bg-white py-12 md:py-20 lg:py-24 border-b border-border"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          <div className="lg:col-span-4 min-w-0">
+            <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-3 block">
+              {siteContent.faq.sectionLabel}
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-navy leading-tight">
+              {siteContent.faq.title}
+            </h2>
+            <p className="mt-4 text-sm sm:text-base text-muted leading-relaxed">
+              Δεν βρήκατε αυτό που ψάχνετε; Μιλήστε απευθείας με την ομάδα μας.
+            </p>
+            <button
+              type="button"
+              onClick={handleScrollToContact}
+              className="mt-4 inline-flex items-center gap-2 min-h-11 text-sm font-semibold text-teal-dark hover:text-navy transition-colors cursor-pointer"
+            >
+              <span>Επικοινωνήστε μαζί μας</span>
+              <ArrowRight className="w-4 h-4 shrink-0" strokeWidth={1.75} />
+            </button>
+          </div>
 
-      {/* Top divider */}
-      <div className="section-divider absolute top-0 left-0" />
-
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Section Header */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={staggerContainer}
-          className="text-center mb-12 lg:mb-14"
-        >
-          <motion.span variants={fadeInUp} className="section-label justify-center mb-4 block">
-            {siteContent.faq.sectionLabel}
-          </motion.span>
-          <motion.h2
-            variants={fadeInUp}
-            className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-navy leading-tight"
-          >
-            {siteContent.faq.title}
-          </motion.h2>
-        </motion.div>
-
-        {/* Accordion */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={staggerContainer}
-        >
-          <Accordion className="space-y-4">
-            {faqItems.map((item, i) => (
-              <motion.div key={i} variants={fadeInUp}>
-                <AccordionItem
-                  value={`item-${i}`}
-                  className="bg-white rounded-xl border border-card-border px-5 sm:px-6 hover:border-teal/30 transition-colors data-[state=open]:border-teal/50 data-[state=open]:shadow-md"
-                >
-                  <AccordionTrigger className="text-left text-[15px] sm:text-base font-semibold text-navy hover:text-teal hover:no-underline py-5">
-                    {item.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-[15px] text-muted leading-relaxed pb-6">
-                    {item.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              </motion.div>
-            ))}
-          </Accordion>
-        </motion.div>
+          <div className="lg:col-span-8 min-w-0">
+            <div className="rounded-xl border border-border bg-warm-white overflow-hidden">
+              <Accordion className="divide-y divide-border">
+                {faqItems.map((item, i) => (
+                  <AccordionItem
+                    key={i}
+                    value={`item-${i}`}
+                    className="border-0 px-5 sm:px-6"
+                  >
+                    <AccordionTrigger className="py-5 min-h-11 text-left text-base font-semibold text-navy hover:text-teal-dark hover:no-underline">
+                      {item.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-5 text-sm sm:text-[15px] text-muted leading-relaxed max-w-[65ch]">
+                      {item.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

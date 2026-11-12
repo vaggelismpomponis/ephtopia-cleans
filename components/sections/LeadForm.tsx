@@ -1,235 +1,146 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Send, CheckCircle, Shield, Clock } from "lucide-react";
 import type { SiteContent } from "@/lib/get-content";
-import { fadeInUp, staggerContainer } from "@/lib/animations";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { useLivePreview } from "@/components/LivePreviewProvider";
 
 const formSchema = z.object({
-  email: z.string().email("Μη έγκυρο email"),
-  phone: z.string().min(10, "Μη έγκυρο τηλέφωνο"),
+  email: z.string().email("Εισάγετε έγκυρο email"),
+  phone: z.string().min(10, "Εισάγετε έγκυρο τηλέφωνο (τουλάχιστον 10 ψηφία)"),
   honeypot: z.string().max(0),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type LeadFormData = z.infer<typeof formSchema>;
 
-interface LeadFormProps {
-  siteContent: SiteContent;
+const TRUST_ITEMS = [
+  { icon: CheckCircle, text: "Δωρεάν αξιολόγηση χωρίς δεσμεύσεις" },
+  { icon: Clock, text: "Απάντηση εντός 24 ωρών" },
+  { icon: Shield, text: "Ασφαλής επικοινωνία — χωρίς spam" },
+] as const;
+
+function LeadSuccessPanel({ message, onReset }: { message: string; onReset: () => void }) {
+  return (
+    <div className="py-6 text-center flex flex-col items-center gap-3">
+      <CheckCircle className="w-7 h-7 text-teal-dark" strokeWidth={1.75} aria-hidden="true" />
+      <h3 className="text-xl font-bold text-navy">{message}</h3>
+      <p className="text-sm text-muted max-w-[40ch]">
+        Ελέγξτε το email σας για περισσότερες λεπτομέρειες.
+      </p>
+      <button
+        type="button"
+        onClick={onReset}
+        className="mt-2 min-h-10 px-4 py-2 rounded-lg border border-border bg-warm-white hover:bg-white text-sm font-semibold text-navy transition-colors cursor-pointer"
+      >
+        Νέα αποστολή
+      </button>
+    </div>
+  );
 }
 
-export default function LeadForm({ siteContent: initialContent }: LeadFormProps) {
+export default function LeadForm({ siteContent: initialContent }: { siteContent: SiteContent }) {
   const preview = useLivePreview();
-  const siteContent = preview?.siteContent || initialContent;
+  const content = (preview?.siteContent || initialContent).leadForm;
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<LeadFormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: { honeypot: "" },
+    mode: "onTouched",
+    defaultValues: { email: "", phone: "", honeypot: "" },
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = (data: LeadFormData) => {
     if (data.honeypot) return;
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log("Form submitted:", data);
     setIsSubmitted(true);
+    reset();
   };
 
-  const content = siteContent.leadForm;
-
   return (
-    <section id="contact" className="relative py-20 md:py-28 overflow-hidden bg-white">
-      {/* Top divider */}
-      <div className="section-divider absolute top-0 left-0" />
-
-      {/* Subtle teal accent */}
-      <div className="absolute top-0 right-0 w-[500px] h-[400px] bg-teal/[0.04] blur-[100px] rounded-full pointer-events-none" />
-
-      {/* Top accent line */}
-      <div className="absolute top-0 left-0 right-0 animated-gradient-line" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left — Copy */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-          >
-            <motion.span
-              variants={fadeInUp}
-              className="section-label mb-6 block"
-            >
+    <section id="contact" className="bg-warm-white py-12 md:py-20 lg:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          <div className="lg:col-span-6 min-w-0">
+            <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-3 block">
               Επικοινωνία
-            </motion.span>
-
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-slate-800 leading-tight mb-2"
-            >
-              {content.title} —
-            </motion.h2>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold gradient-text leading-tight mb-6"
-            >
-              {content.titleAccent}
-            </motion.h2>
-            <motion.p
-              variants={fadeInUp}
-              className="text-base text-slate-500 mb-10 max-w-md leading-relaxed"
-            >
-              {content.subtitle}
-            </motion.p>
-
-            {/* Trust points */}
-            <motion.div variants={staggerContainer} className="space-y-3.5">
-              {[
-                { icon: CheckCircle, text: "Δωρεάν αξιολόγηση χωρίς δεσμεύσεις" },
-                { icon: Clock, text: "Απάντηση εντός 24 ωρών" },
-                { icon: Shield, text: "Ασφαλής επικοινωνία — χωρίς spam" },
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  variants={fadeInUp}
-                  className="flex items-center gap-3"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-teal/10 flex items-center justify-center shrink-0">
-                    <item.icon className="w-4 h-4 text-teal" />
-                  </div>
-                  <span className="text-sm text-slate-600">{item.text}</span>
-                </motion.div>
+            </span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-navy leading-tight">
+              {content.title} — <span className="text-teal-dark">{content.titleAccent}</span>
+            </h2>
+            <p className="mt-4 text-base text-muted max-w-[48ch] leading-relaxed">{content.subtitle}</p>
+            <ul className="mt-8 pt-6 border-t border-border space-y-3">
+              {TRUST_ITEMS.map((item) => (
+                <li key={item.text} className="flex items-center gap-2.5 text-sm text-navy font-medium">
+                  <item.icon className="w-4 h-4 text-teal-dark shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                  <span>{item.text}</span>
+                </li>
               ))}
-            </motion.div>
-          </motion.div>
+            </ul>
+          </div>
 
-          {/* Right — Form */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={fadeInUp}
-          >
-            <AnimatePresence mode="wait">
+          <div className="lg:col-span-6 min-w-0">
+            <div className="rounded-xl border border-border bg-white p-6 sm:p-8">
               {isSubmitted ? (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                >
-                  <Card className="bg-white border-slate-200 shadow-sm">
-                    <CardContent className="p-10 text-center flex flex-col items-center">
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
-                        className="w-16 h-16 rounded-xl bg-teal/10 flex items-center justify-center mb-6"
-                      >
-                        <CheckCircle className="w-8 h-8 text-teal" />
-                      </motion.div>
-                      <h3 className="text-xl font-bold text-slate-800 mb-3">
-                        {content.successMessage}
-                      </h3>
-                      <p className="text-slate-400 text-sm">
-                        Ελέγξτε το email σας για περισσότερες λεπτομέρειες.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+                <LeadSuccessPanel message={content.successMessage} onReset={() => setIsSubmitted(false)} />
               ) : (
-                <motion.div key="form">
-                  <Card className="bg-white border-slate-200 shadow-sm">
-                    <CardContent className="p-6 sm:p-8">
-                      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                        {/* Email */}
-                        <div>
-                          <label htmlFor="email" className="block text-xs font-semibold text-slate-500 mb-2 tracking-wide uppercase">
-                            {content.fields.email.label}
-                          </label>
-                          <Input
-                            {...register("email")}
-                            id="email"
-                            type="email"
-                            placeholder={content.fields.email.placeholder}
-                            className={`h-12 bg-white focus:bg-white focus-visible:bg-white text-slate-800 border-slate-200 hover:border-slate-300 focus-visible:border-teal focus-visible:ring-2 focus-visible:ring-teal/20 placeholder:text-slate-300 transition-all ${errors.email ? "border-red-300 focus-visible:ring-red-300" : ""
-                              }`}
-                          />
-                          {errors.email && (
-                            <p className="text-red-500 text-xs mt-1.5">{errors.email.message}</p>
-                          )}
-                        </div>
+                <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+                  <div>
+                    <label htmlFor="lead-email" className="block text-sm font-medium text-navy mb-1.5">
+                      {content.fields.email.label}
+                    </label>
+                    <Input
+                      {...register("email")}
+                      id="lead-email"
+                      type="email"
+                      inputMode="email"
+                      autoComplete="email"
+                      autoCapitalize="none"
+                      aria-invalid={!!errors.email}
+                      placeholder={content.fields.email.placeholder}
+                      className="min-h-11 h-11 bg-white text-navy border-border placeholder:text-muted-light"
+                    />
+                    {errors.email && (
+                      <p className="text-destructive text-xs mt-1.5" role="alert">{errors.email.message}</p>
+                    )}
+                  </div>
 
-                        {/* Phone */}
-                        <div>
-                          <label htmlFor="phone" className="block text-xs font-semibold text-slate-500 mb-2 tracking-wide uppercase">
-                            {content.fields.phone.label}
-                          </label>
-                          <Input
-                            {...register("phone")}
-                            id="phone"
-                            type="tel"
-                            placeholder={content.fields.phone.placeholder}
-                            className={`h-12 bg-white focus:bg-white focus-visible:bg-white text-slate-800 border-slate-200 hover:border-slate-300 focus-visible:border-teal focus-visible:ring-2 focus-visible:ring-teal/20 placeholder:text-slate-300 transition-all ${errors.phone ? "border-red-300 focus-visible:ring-red-300" : ""
-                              }`}
-                          />
-                          {errors.phone && (
-                            <p className="text-red-500 text-xs mt-1.5">{errors.phone.message}</p>
-                          )}
-                        </div>
+                  <div>
+                    <label htmlFor="lead-phone" className="block text-sm font-medium text-navy mb-1.5">
+                      {content.fields.phone.label}
+                    </label>
+                    <Input
+                      {...register("phone")}
+                      id="lead-phone"
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      aria-invalid={!!errors.phone}
+                      placeholder={content.fields.phone.placeholder}
+                      className="min-h-11 h-11 bg-white text-navy border-border placeholder:text-muted-light"
+                    />
+                    {errors.phone && (
+                      <p className="text-destructive text-xs mt-1.5" role="alert">{errors.phone.message}</p>
+                    )}
+                  </div>
 
-                        {/* Honeypot (hidden) */}
-                        <input
-                          {...register("honeypot")}
-                          type="text"
-                          tabIndex={-1}
-                          autoComplete="off"
-                          className="absolute opacity-0 w-0 h-0 pointer-events-none"
-                          aria-hidden="true"
-                        />
+                  <input {...register("honeypot")} type="text" tabIndex={-1} autoComplete="off" className="sr-only" aria-hidden="true" />
 
-                        {/* Submit */}
-                        <Button
-                          type="submit"
-                          disabled={isSubmitting}
-                          className="w-full h-12 bg-teal hover:bg-teal-dark text-white text-base font-semibold shadow-md shadow-teal/15 transition-all hover:shadow-lg hover:shadow-teal/20 group"
-                        >
-                          {isSubmitting ? (
-                            <motion.div
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                              className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
-                            />
-                          ) : (
-                            <>
-                              {content.submitCta}
-                              <Send className="w-4 h-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
-                            </>
-                          )}
-                        </Button>
-
-                        {/* Trust micro-copy */}
-                        <p className="text-center text-[11px] text-slate-400 mt-4">
-                          {content.trustMicroCopy}
-                        </p>
-                      </form>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full min-h-11 h-12 rounded-lg bg-teal-dark hover:bg-navy text-white text-sm sm:text-base font-semibold transition-colors inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                  >
+                    <span>{content.submitCta}</span>
+                    <Send className="w-4 h-4 shrink-0" strokeWidth={1.75} />
+                  </button>
+                  <p className="text-center text-xs text-muted">{content.trustMicroCopy}</p>
+                </form>
               )}
-            </AnimatePresence>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

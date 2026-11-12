@@ -1,10 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Cookie, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 
 export default function CookieNotice() {
   const [isVisible, setIsVisible] = useState(false);
@@ -12,7 +9,7 @@ export default function CookieNotice() {
   useEffect(() => {
     const consent = localStorage.getItem("ephtopia-cookie-consent");
     if (!consent) {
-      const timer = setTimeout(() => setIsVisible(true), 2000);
+      const timer = setTimeout(() => setIsVisible(true), 1500);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -27,47 +24,48 @@ export default function CookieNotice() {
     setIsVisible(false);
   };
 
+  if (!isVisible) return null;
+
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="fixed bottom-0 left-0 right-0 z-50 p-4"
-        >
-          <Card className="max-w-3xl mx-auto bg-navy text-white shadow-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 border border-white/[0.06] backdrop-blur-xl">
-            <Cookie className="w-5 h-5 text-teal shrink-0 mt-0.5 sm:mt-0" />
-            <p className="text-sm text-white/70 flex-1 leading-relaxed">
-              Χρησιμοποιούμε cookies για τη βελτίωση της εμπειρίας σας.
-              Συνεχίζοντας, αποδέχεστε τη{" "}
-              <a href="#" className="text-teal hover:text-teal-light underline transition-colors">
-                Πολιτική Απορρήτου
-              </a>
-              .
-            </p>
-            <div className="flex items-center gap-2 shrink-0">
-              <Button
-                onClick={handleAccept}
-                className="bg-teal hover:bg-teal-light text-white shadow-lg shadow-teal/20"
-                size="sm"
-              >
-                Αποδοχή
-              </Button>
-              <Button
-                onClick={handleDismiss}
-                variant="ghost"
-                size="icon"
-                className="text-white/40 hover:text-white/80 hover:bg-white/10"
-                aria-label="Dismiss"
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-          </Card>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <aside
+      aria-label="Ειδοποίηση cookies"
+      className="fixed bottom-0 left-0 right-0 z-50 p-4"
+    >
+      <div className="max-w-3xl mx-auto bg-navy text-white border border-navy-medium rounded-xl shadow-xs p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <Cookie
+          className="w-5 h-5 text-teal shrink-0 mt-0.5 sm:mt-0"
+          strokeWidth={1.75}
+          aria-hidden="true"
+        />
+        <p className="text-sm text-slate-300 flex-1 leading-relaxed min-w-0">
+          Χρησιμοποιούμε cookies για τη βελτίωση της εμπειρίας σας. Συνεχίζοντας,
+          αποδέχεστε τη{" "}
+          <a
+            href="#contact"
+            className="text-teal-light hover:text-white underline transition-colors"
+          >
+            Πολιτική Απορρήτου
+          </a>
+          .
+        </p>
+        <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+          <button
+            type="button"
+            onClick={handleAccept}
+            className="flex-1 sm:flex-initial min-h-10 px-4 py-2 rounded-lg bg-teal-dark hover:bg-teal text-white text-sm font-semibold transition-colors cursor-pointer"
+          >
+            Αποδοχή
+          </button>
+          <button
+            type="button"
+            onClick={handleDismiss}
+            className="min-h-10 min-w-10 inline-flex items-center justify-center rounded-lg border border-navy-medium text-slate-300 hover:text-white hover:bg-navy-light transition-colors cursor-pointer"
+            aria-label="Κλείσιμο ειδοποίησης cookies"
+          >
+            <X className="w-4 h-4" strokeWidth={1.75} />
+          </button>
+        </div>
+      </div>
+    </aside>
   );
 }

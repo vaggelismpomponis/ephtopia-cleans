@@ -1,104 +1,112 @@
-import { getActiveJobs } from '@/app/actions/jobs';
-import { JobCard } from '@/components/careers/JobCard';
-import { Briefcase, Users, TrendingUp, ArrowRight, Mail } from 'lucide-react';
+import { getActiveJobs } from "@/app/actions/jobs";
+import { getContent } from "@/lib/get-content";
+import { JobCard } from "@/components/careers/JobCard";
+import { Briefcase, ArrowRight, Mail } from "lucide-react";
 
-export const revalidate = 60; // ISR — re-fetch every 60s
+export const revalidate = 60;
 
 export default async function CareersPage() {
-  const jobs = await getActiveJobs();
+  const [jobs, { siteContent }] = await Promise.all([
+    getActiveJobs(),
+    getContent(),
+  ]);
+  const contactEmail = siteContent.footer.contact.email;
 
   return (
     <>
-      {/* ──────────────── Hero — matches homepage style ──────────────── */}
-      <section className="relative min-h-[55vh] flex items-center overflow-hidden bg-slate-100">
-        {/* Light overlay gradient — same as homepage hero */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/75 to-white/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-100/80 via-transparent to-transparent" />
-
-        {/* Subtle teal glow — top right, same as homepage */}
-        <div className="absolute top-0 right-0 w-[600px] h-[500px] bg-teal/[0.05] blur-[120px] rounded-full pointer-events-none" />
-
-        {/* Animated gradient accent line at bottom — same as homepage */}
-        <div className="absolute bottom-0 left-0 right-0 animated-gradient-line" />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 md:pt-32 pb-16 md:pb-20 w-full">
+      <section className="bg-white border-b border-border pt-24 pb-12 md:pt-32 md:pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            {/* Section label — same style as homepage */}
-            <span className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.2em] uppercase text-teal mb-8">
-              <span className="w-6 h-px bg-teal" />
+            <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-4 block">
               Θέσεις Εργασίας
             </span>
-
-            {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-7xl font-extrabold text-slate-800 leading-[1.08] tracking-tight mb-6">
-              Καριέρα στην{' '}
-              <br />
-              <span className="gradient-text">Ephtopia Cleans</span>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-navy leading-[1.08] tracking-tight">
+              Καριέρα στην{" "}
+              <span className="text-teal-dark">Ephtopia Cleans</span>
             </h1>
-
-            {/* Subheadline */}
-            <p className="text-base sm:text-lg text-slate-500 max-w-xl leading-relaxed font-light mb-10">
-              Γίνε μέρος μιας ομάδας που κάνει τη διαφορά. Εργαζόμαστε με επαγγελματισμό,
-              αξιοπιστία και μεράκι — και ψάχνουμε ανθρώπους που μοιράζονται τις ίδιες αξίες.
+            <p className="mt-5 text-base sm:text-lg text-muted max-w-[54ch] leading-relaxed">
+              Γίνε μέρος μιας ομάδας που κάνει τη διαφορά. Εργαζόμαστε με
+              επαγγελματισμό, αξιοπιστία και μεράκι — και ψάχνουμε ανθρώπους που
+              μοιράζονται τις ίδιες αξίες.
             </p>
-
-            {/* Stats card — same white card as homepage trust stats */}
-            <div className="bg-white border border-slate-200 shadow-md inline-flex rounded-xl p-1">
-              <div className="flex items-center divide-x divide-slate-200">
-                {[
-                  { icon: Briefcase, value: `${jobs.length}`, label: 'Ανοιχτές Θέσεις' },
-                  { icon: Users, value: '50+', label: 'Εργαζόμενοι' },
-                  { icon: TrendingUp, value: '2026', label: 'Ίδρυση' },
-                ].map(({ icon: Icon, value, label }) => (
-                  <div key={label} className="flex flex-col items-center justify-center text-center px-6 sm:px-8 py-4 sm:py-5">
-                    <div className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">{value}</div>
-                    <div className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-1">{label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
+
+          <dl className="mt-10 pt-8 border-t border-border grid grid-cols-2 sm:flex sm:items-center gap-6 sm:gap-12">
+            <div className="min-w-0">
+              <dd className="text-2xl sm:text-3xl font-bold text-navy tracking-tight tabular-nums">
+                {jobs.length}
+              </dd>
+              <dt className="text-xs font-medium uppercase tracking-wider text-muted mt-1">
+                Ανοιχτές Θέσεις
+              </dt>
+            </div>
+            <div className="hidden sm:block w-px h-10 bg-border" aria-hidden="true" />
+            <div className="min-w-0">
+              <dd className="text-2xl sm:text-3xl font-bold text-navy tracking-tight tabular-nums">
+                50+
+              </dd>
+              <dt className="text-xs font-medium uppercase tracking-wider text-muted mt-1">
+                Εργαζόμενοι
+              </dt>
+            </div>
+            <div className="hidden sm:block w-px h-10 bg-border" aria-hidden="true" />
+            <div className="col-span-2 sm:col-span-1 min-w-0">
+              <dd className="text-2xl sm:text-3xl font-bold text-navy tracking-tight tabular-nums">
+                2026
+              </dd>
+              <dt className="text-xs font-medium uppercase tracking-wider text-muted mt-1">
+                Ίδρυση
+              </dt>
+            </div>
+          </dl>
         </div>
       </section>
 
-      {/* ──────────────── Job Listings ──────────────── */}
-      <section className="section-padding bg-warm-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+      <section className="bg-warm-white py-12 md:py-20 lg:py-24 border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {jobs.length === 0 ? (
-            /* Empty state */
-            <div className="text-center py-20">
-              <div className="w-20 h-20 bg-white border border-border rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
-                <Briefcase className="w-8 h-8 text-muted-light" />
-              </div>
-              <h2 className="text-xl font-bold text-navy font-heading mb-3">
+            <div className="rounded-xl border border-border bg-white p-8 sm:p-12 text-center max-w-xl mx-auto">
+              <Briefcase
+                className="w-6 h-6 text-teal-dark mx-auto mb-3"
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
+              <h2 className="text-xl font-bold text-navy mb-2">
                 Δεν υπάρχουν ανοιχτές θέσεις αυτή τη στιγμή
               </h2>
-              <p className="text-muted text-sm max-w-md mx-auto leading-relaxed mb-8">
-                Δεν έχουμε τρέχουσες αγγελίες, αλλά μπορείτε να μας στείλετε το βιογραφικό σας
-                και θα επικοινωνήσουμε μαζί σας για μελλοντικές ευκαιρίες.
+              <p className="text-sm text-muted max-w-[44ch] mx-auto leading-relaxed mb-6">
+                Δεν έχουμε τρέχουσες αγγελίες, αλλά μπορείτε να μας στείλετε το
+                βιογραφικό σας και θα επικοινωνήσουμε μαζί σας για μελλοντικές
+                ευκαιρίες.
               </p>
               <a
-                href="mailto:info@ephtopia.gr"
-                className="inline-flex items-center gap-2 bg-teal hover:bg-teal-dark text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all duration-200 hover:shadow-lg hover:shadow-teal/20 hover:-translate-y-0.5"
+                href={`mailto:${contactEmail}`}
+                className="w-full sm:w-auto min-h-11 inline-flex items-center justify-center gap-2 bg-teal-dark hover:bg-navy text-white font-semibold px-6 py-3 rounded-lg text-sm transition-colors"
               >
-                <Mail className="w-4 h-4" />
-                Στείλτε το βιογραφικό σας
+                <Mail className="w-4 h-4 shrink-0" strokeWidth={1.75} />
+                <span>Στείλτε το βιογραφικό σας</span>
               </a>
             </div>
           ) : (
             <>
-              <div className="text-center mb-10">
-                <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-2">
+              <div className="mb-10">
+                <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-2 block">
                   Αγγελίες Εργασίας
-                </p>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-navy font-heading">
-                  {jobs.length === 1 ? '1 ανοιχτή θέση' : `${jobs.length} ανοιχτές θέσεις`}
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-bold text-navy">
+                  {jobs.length === 1
+                    ? "1 ανοιχτή θέση"
+                    : `${jobs.length} ανοιχτές θέσεις`}
                 </h2>
               </div>
 
-              <div className={`grid gap-4 lg:gap-5 ${jobs.length === 1 ? "max-w-xl mx-auto" : "sm:grid-cols-2"}`}>
-                {jobs.map((job, i) => (
-                  <JobCard key={job.id} job={job} index={i} />
+              <div
+                className={`grid gap-6 ${
+                  jobs.length === 1 ? "max-w-xl" : "grid-cols-1 md:grid-cols-2"
+                }`}
+              >
+                {jobs.map((job) => (
+                  <JobCard key={job.id} job={job} />
                 ))}
               </div>
             </>
@@ -106,29 +114,29 @@ export default async function CareersPage() {
         </div>
       </section>
 
-      {/* ──────────────── Bottom CTA — light style ──────────────── */}
-      <section className="section-padding bg-white border-t border-border">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          {/* Section label */}
-          <span className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.2em] uppercase text-teal mb-6">
-            <span className="w-6 h-px bg-teal" />
-            Ανοιχτή Αίτηση
-          </span>
-
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-800 font-heading tracking-tight mb-4">
-            Δεν βρήκες τη θέση που ψάχνεις;
-          </h2>
-          <p className="text-slate-500 text-base leading-relaxed mb-8 max-w-xl mx-auto">
-            Στείλτε μας το βιογραφικό σας ούτως ή άλλως — ενημερωνόμαστε τακτικά για νέες ανάγκες
-            και θα επικοινωνήσουμε μαζί σας άμεσα.
-          </p>
-          <a
-            href="mailto:info@ephtopia.gr?subject=Αυτόκλητο Βιογραφικό"
-            className="inline-flex items-center gap-2 bg-teal hover:bg-teal-dark text-white font-bold px-8 py-3.5 rounded-xl text-sm transition-all duration-200 hover:shadow-lg hover:shadow-teal/20 hover:-translate-y-0.5"
-          >
-            Επικοινωνία &amp; Βιογραφικό
-            <ArrowRight className="w-4 h-4" />
-          </a>
+      <section className="bg-white py-12 md:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 rounded-xl border border-border bg-warm-white p-6 sm:p-10">
+            <div className="max-w-xl min-w-0">
+              <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-2 block">
+                Ανοιχτή Αίτηση
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-navy leading-tight">
+                Δεν βρήκες τη θέση που ψάχνεις;
+              </h2>
+              <p className="mt-2 text-base text-muted leading-relaxed">
+                Στείλτε μας το βιογραφικό σας ούτως ή άλλως — ενημερωνόμαστε
+                τακτικά για νέες ανάγκες και θα επικοινωνήσουμε μαζί σας άμεσα.
+              </p>
+            </div>
+            <a
+              href={`mailto:${contactEmail}?subject=Αυτόκλητο Βιογραφικό`}
+              className="w-full sm:w-auto min-h-11 inline-flex items-center justify-center gap-2 bg-teal-dark hover:bg-navy text-white font-semibold px-6 py-3 rounded-lg text-sm sm:text-base transition-colors shrink-0"
+            >
+              <span>Επικοινωνία &amp; Βιογραφικό</span>
+              <ArrowRight className="w-4 h-4 shrink-0" strokeWidth={1.75} />
+            </a>
+          </div>
         </div>
       </section>
     </>

@@ -1,25 +1,7 @@
-"use client";
-
-import { motion } from "framer-motion";
-import {
-  ShieldCheck,
-  Sparkles,
-  Clock,
-  Camera,
-  ArrowRight,
-  MapPin,
-  CheckCircle2,
-} from "lucide-react";
 import Link from "next/link";
-import { fadeInUp, staggerContainer } from "@/lib/animations";
+import { ArrowRight } from "lucide-react";
 import type { SiteContent } from "@/lib/get-content";
-
-const iconMap = {
-  ShieldCheck,
-  Sparkles,
-  Clock,
-  Camera,
-};
+import { AboutCredentials } from "@/components/about/AboutCredentials";
 
 interface AboutPageClientProps {
   siteContent: SiteContent;
@@ -28,369 +10,100 @@ interface AboutPageClientProps {
 export default function AboutPageClient({ siteContent }: AboutPageClientProps) {
   const about = siteContent.about;
 
-  const handleContactScroll = () => {
-    window.location.href = "/#contact";
-  };
-
   return (
     <main>
-      {/* ── Hero ── */}
-      <section className="relative min-h-[52vh] flex items-end overflow-hidden bg-slate-100 pb-20 pt-36">
-        {/* Animated bottom line */}
-        <div className="absolute bottom-0 left-0 right-0 animated-gradient-line" />
-        {/* Subtle teal glow */}
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-teal/[0.06] rounded-full blur-3xl" />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            className="max-w-3xl"
-          >
-            <motion.div variants={fadeInUp} className="mb-6">
-              <span className="section-label">
-                {about.heroLabel}
-              </span>
-            </motion.div>
-
-            <motion.h1
-              variants={fadeInUp}
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-800 leading-[1.08] tracking-tight mb-6"
-            >
+      <section className="bg-white border-b border-border pt-24 pb-12 md:pt-32 md:pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-4 block">
+              {about.heroLabel}
+            </span>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-navy leading-[1.08] tracking-tight">
               {about.title}
-            </motion.h1>
-
-            <motion.p
-              variants={fadeInUp}
-              className="text-lg sm:text-xl text-slate-500 leading-relaxed max-w-2xl font-light"
-            >
+            </h1>
+            <p className="mt-5 text-base sm:text-lg text-muted max-w-[56ch] leading-relaxed">
               {about.subtitle}
-            </motion.p>
-          </motion.div>
-        </div>
-      </section>
+            </p>
+          </div>
 
-      {/* ── Stats Bar ── */}
-      <section className="bg-white border-b border-border-light">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="grid grid-cols-2 sm:grid-cols-3"
-          >
+          <dl className="mt-10 pt-8 border-t border-border grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-10">
             {about.stats.map((stat, i) => (
-              <motion.div
-                key={i}
-                variants={fadeInUp}
-                className={`py-8 px-6 flex flex-col items-center justify-center text-center ${
-                  i === 1 ? "border-l border-border-light" : ""
-                } ${
-                  i === 2
-                    ? "col-span-2 sm:col-span-1 border-t sm:border-t-0 sm:border-l border-border-light"
-                    : ""
-                }`}
+              <div
+                key={stat.label}
+                className={i === 2 ? "col-span-2 sm:col-span-1 min-w-0" : "min-w-0"}
               >
-                <div className="text-3xl sm:text-4xl font-extrabold text-navy tracking-tight mb-1">
+                <dd className="text-2xl sm:text-3xl font-bold text-navy tracking-tight tabular-nums">
                   {stat.value}
-                </div>
-                <div className="text-xs text-muted-light font-medium tracking-wide uppercase">
+                </dd>
+                <dt className="text-xs font-medium uppercase tracking-wider text-muted mt-1">
                   {stat.label}
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Mission & Story ── */}
-      <section className="section-padding bg-warm-white relative overflow-hidden">
-        <div className="section-divider absolute top-0 left-0" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-            {/* Mission */}
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-80px" }}
-              variants={staggerContainer}
-            >
-              <motion.span
-                variants={fadeInUp}
-                className="section-label mb-5 block"
-              >
-                {about.missionTitle}
-              </motion.span>
-              <motion.h2
-                variants={fadeInUp}
-                className="text-3xl sm:text-4xl font-bold text-navy leading-tight mb-6 tracking-tight"
-              >
-                {about.missionTitle}
-              </motion.h2>
-              <motion.p
-                variants={fadeInUp}
-                className="text-[17px] text-muted leading-relaxed"
-              >
-                {about.missionText}
-              </motion.p>
-            </motion.div>
-
-            {/* Story */}
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-80px" }}
-              variants={staggerContainer}
-              className="relative"
-            >
-              {/* Decorative accent */}
-              <div className="absolute -left-4 top-0 bottom-0 w-[3px] rounded-full bg-gradient-to-b from-teal via-teal/40 to-transparent" />
-              <div className="pl-8">
-                <motion.span
-                  variants={fadeInUp}
-                  className="section-label mb-5 block"
-                >
-                  {about.storyTitle}
-                </motion.span>
-                <motion.h2
-                  variants={fadeInUp}
-                  className="text-3xl sm:text-4xl font-bold text-navy leading-tight mb-6 tracking-tight"
-                >
-                  {about.storyTitle}
-                </motion.h2>
-                <motion.p
-                  variants={fadeInUp}
-                  className="text-[17px] text-muted leading-relaxed"
-                >
-                  {about.storyText}
-                </motion.p>
+                </dt>
               </div>
-            </motion.div>
-          </div>
+            ))}
+          </dl>
         </div>
       </section>
 
-      {/* ── Core Values ── */}
-      <section className="section-padding bg-white relative overflow-hidden">
-        <div className="section-divider absolute top-0 left-0" />
+      <section className="bg-warm-white py-12 md:py-20 lg:py-24 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="text-center max-w-2xl mx-auto mb-16"
-          >
-            <motion.span
-              variants={fadeInUp}
-              className="section-label justify-center mb-4 block"
-            >
-              Οι Αξίες μας
-            </motion.span>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-navy leading-tight tracking-tight"
-            >
-              Τι μας Κάνει Διαφορετικούς
-            </motion.h2>
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={staggerContainer}
-            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
-            {about.values.map((value, i) => {
-              const IconComponent =
-                iconMap[value.icon as keyof typeof iconMap] || Sparkles;
-              const num = String(i + 1).padStart(2, "0");
-              return (
-                <motion.div
-                  key={i}
-                  variants={fadeInUp}
-                  className="group relative bg-warm-white rounded-xl p-7 border border-transparent hover:border-border transition-all duration-400 overflow-hidden"
-                >
-                  {/* Left accent */}
-                  <div className="absolute left-0 top-6 bottom-6 w-[3px] rounded-full bg-gradient-to-b from-teal/40 to-teal/10 group-hover:from-teal group-hover:to-teal/40 transition-all duration-500" />
-
-                  <div className="pl-4">
-                    <div className="flex items-start justify-between mb-5">
-                      <span className="number-badge">{num}</span>
-                      <div className="w-10 h-10 rounded-lg bg-teal/8 flex items-center justify-center text-teal group-hover:bg-teal/12 transition-colors duration-300">
-                        <IconComponent className="w-5 h-5" />
-                      </div>
-                    </div>
-                    <h3 className="text-lg font-bold text-navy mb-2.5 tracking-tight">
-                      {value.title}
-                    </h3>
-                    <p className="text-[14px] text-muted leading-relaxed">
-                      {value.description}
-                    </p>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Legal Compliance ── */}
-      <section className="section-padding bg-slate-50 relative overflow-hidden">
-        <div className="section-divider absolute top-0 left-0" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-teal/[0.05] rounded-full blur-3xl" />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-            >
-              <motion.div variants={fadeInUp} className="mb-6">
-                <span className="section-label justify-center">
-                  Νομική Συμμόρφωση
-                </span>
-              </motion.div>
-
-              <motion.h2
-                variants={fadeInUp}
-                className="text-3xl sm:text-4xl font-bold text-slate-800 leading-tight mb-6 tracking-tight"
-              >
-                {about.complianceTitle}
-              </motion.h2>
-
-              <motion.p
-                variants={fadeInUp}
-                className="text-[17px] text-slate-500 leading-relaxed mb-10"
-              >
-                {about.complianceText}
-              </motion.p>
-
-              {/* Compliance badges */}
-              <motion.div
-                variants={fadeInUp}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-3xl mx-auto w-full"
-              >
-                {[
-                  "Ποινικό Μητρώο",
-                  "Ασφαλιστική Κάλυψη",
-                  "Επαγγελματικές Πιστοποιήσεις",
-                  "Νόμιμη Απασχόληση",
-                ].map((badge, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-start gap-2.5 bg-white border border-slate-200 text-slate-700 text-sm font-medium px-4 py-3 rounded-xl shadow-sm hover:border-teal/30 transition-all text-left w-full min-w-0"
-                  >
-                    <CheckCircle2 className="w-4 h-4 text-teal shrink-0" />
-                    <span>{badge}</span>
-                  </div>
-                ))}
-              </motion.div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Coverage ── */}
-      <section className="section-padding bg-warm-white relative overflow-hidden">
-        <div className="section-divider absolute top-0 left-0" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            variants={staggerContainer}
-            className="flex flex-col lg:flex-row items-center lg:items-start gap-12"
-          >
-            <div className="flex-1 max-w-xl">
-              <motion.span
-                variants={fadeInUp}
-                className="section-label mb-5 block"
-              >
-                {about.coverageTitle}
-              </motion.span>
-              <motion.h2
-                variants={fadeInUp}
-                className="text-3xl sm:text-4xl font-bold text-navy leading-tight mb-5 tracking-tight"
-              >
-                {about.coverageTitle}
-              </motion.h2>
-              <motion.p
-                variants={fadeInUp}
-                className="text-[17px] text-muted leading-relaxed"
-              >
-                {about.coverageText}
-              </motion.p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+            <div className="min-w-0">
+              <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-3 block">
+                Αποστολή
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-navy leading-tight">
+                {about.missionTitle}
+              </h2>
+              <p className="mt-4 text-base text-muted leading-relaxed max-w-[54ch]">
+                {about.missionText}
+              </p>
             </div>
 
-            <motion.div
-              variants={fadeInUp}
-              className="flex-1 grid grid-cols-2 gap-3 w-full max-w-sm"
-            >
-              {["Κέντρο Αθήνας", "Νότια Προάστια", "Βόρεια Προάστια", "Υπόλοιπο Αττικής"].map((city, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-2.5 bg-white border border-card-border rounded-xl px-4 py-4"
-                >
-                  <MapPin className="w-4 h-4 text-teal shrink-0" />
-                  <span className="text-[14px] font-semibold text-navy">
-                    {city}
-                  </span>
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
+            <div className="min-w-0 lg:border-l lg:border-border lg:pl-12 pt-8 lg:pt-0 border-t lg:border-t-0 border-border">
+              <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-3 block">
+                Ιστορία
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-navy leading-tight">
+                {about.storyTitle}
+              </h2>
+              <p className="mt-4 text-base text-muted leading-relaxed max-w-[54ch]">
+                {about.storyText}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="section-padding bg-white relative overflow-hidden">
-        <div className="section-divider absolute top-0 left-0" />
+      <AboutCredentials about={about} />
+
+      <section className="bg-white py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="max-w-2xl mx-auto text-center"
-          >
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl sm:text-4xl font-bold text-navy mb-5 tracking-tight"
-            >
-              {about.ctaTitle}
-            </motion.h2>
-            <motion.p
-              variants={fadeInUp}
-              className="text-lg text-muted mb-10 leading-relaxed"
-            >
-              {about.ctaText}
-            </motion.p>
-            <motion.div
-              variants={fadeInUp}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-            >
-              <button
-                onClick={handleContactScroll}
-                className="group inline-flex items-center justify-center gap-2.5 bg-teal hover:bg-teal-light text-white px-8 py-4 rounded-lg text-base font-semibold transition-all duration-300 hover:shadow-xl hover:shadow-teal/20 cursor-pointer"
-              >
-                {about.ctaButton}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 rounded-xl border border-border bg-warm-white p-6 sm:p-10">
+            <div className="max-w-xl min-w-0">
+              <h2 className="text-2xl sm:text-3xl font-bold text-navy leading-tight">
+                {about.ctaTitle}
+              </h2>
+              <p className="mt-2 text-base text-muted leading-relaxed">
+                {about.ctaText}
+              </p>
+            </div>
+            <div className="flex flex-col-reverse sm:flex-row gap-3 shrink-0">
               <Link
                 href="/services"
-                className="group inline-flex items-center justify-center gap-2.5 border border-navy/20 hover:border-navy/40 text-navy/70 hover:text-navy px-8 py-4 rounded-lg text-base font-semibold transition-all duration-300 hover:bg-navy/4"
+                className="w-full sm:w-auto min-h-11 px-6 py-3 rounded-lg border border-border bg-white hover:border-navy/40 text-navy text-sm font-semibold transition-colors inline-flex items-center justify-center gap-2"
               >
-                Δείτε τις Υπηρεσίες μας
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <span>Δείτε τις Υπηρεσίες μας</span>
+                <ArrowRight className="w-4 h-4 text-muted shrink-0" strokeWidth={1.75} />
               </Link>
-            </motion.div>
-          </motion.div>
+              <Link
+                href="/#contact"
+                className="w-full sm:w-auto min-h-11 px-6 py-3 rounded-lg bg-teal-dark hover:bg-navy text-white text-sm font-semibold transition-colors inline-flex items-center justify-center gap-2"
+              >
+                <span>{about.ctaButton}</span>
+                <ArrowRight className="w-4 h-4 shrink-0" strokeWidth={1.75} />
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </main>

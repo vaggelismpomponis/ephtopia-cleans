@@ -1,10 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ArrowRight, UserX, ShieldAlert, Clock } from "lucide-react";
 import type { SiteContent } from "@/lib/get-content";
-import { fadeInUp, staggerContainer } from "@/lib/animations";
-import { Card, CardContent } from "@/components/ui/card";
 import { useLivePreview } from "@/components/LivePreviewProvider";
 
 const iconMap = {
@@ -21,95 +18,70 @@ export default function Problem({ siteContent: initialContent }: ProblemProps) {
   const preview = useLivePreview();
   const siteContent = preview?.siteContent || initialContent;
 
-  const handleScroll = (href: string) => {
-    const element = document.querySelector(href);
-    element?.scrollIntoView({ behavior: "smooth" });
+  const handleScrollToServices = () => {
+    document.querySelector("#services")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section id="problem" className="section-padding bg-white relative overflow-hidden">
-      {/* Top divider */}
-      <div className="section-divider absolute top-0 left-0" />
-
+    <section
+      id="problem"
+      className="bg-warm-white py-12 md:py-20 lg:py-24 border-b border-border"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={staggerContainer}
-          className="max-w-2xl mb-16 lg:mb-20"
-        >
-          <motion.span variants={fadeInUp} className="section-label mb-4 block">
+        <div className="max-w-2xl mb-10 md:mb-14">
+          <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-3 block">
             {siteContent.problem.sectionLabel}
-          </motion.span>
-          <motion.h2
-            variants={fadeInUp}
-            className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-navy mb-5 leading-tight"
-          >
+          </span>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-navy leading-tight">
             {siteContent.problem.title}
-          </motion.h2>
-          <motion.p
-            variants={fadeInUp}
-            className="text-lg text-muted leading-relaxed"
-          >
+          </h2>
+          <p className="mt-4 text-base sm:text-lg text-muted max-w-[58ch] leading-relaxed">
             {siteContent.problem.subtitle}
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
-        {/* Problem Cards — Editorial style with left accent */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={staggerContainer}
-          className="grid md:grid-cols-3 gap-6 lg:gap-8"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-3 border border-border rounded-xl bg-white divide-y md:divide-y-0 md:divide-x divide-border">
           {siteContent.problem.cards.map((card, i) => {
-            const IconComponent = iconMap[card.icon as keyof typeof iconMap];
-            return (
-              <motion.div key={i} variants={fadeInUp} className="group">
-                <Card className="relative bg-warm-white border-transparent hover:border-border transition-all duration-400 h-full overflow-hidden hover:shadow-xl hover:-translate-y-1">
-                  {/* Left accent bar */}
-                  <div className="absolute left-0 top-6 bottom-6 w-[3px] rounded-r-full bg-gradient-to-b from-teal/40 to-teal/10 group-hover:from-teal group-hover:to-teal/40 transition-all duration-500" />
-                  <CardContent className="p-7 lg:p-8 pl-8 lg:pl-10">
-                    {/* Icon */}
-                    <div className="w-10 h-10 rounded-lg bg-teal/10 flex items-center justify-center mb-5 text-teal group-hover:bg-teal group-hover:text-white transition-colors duration-300 shadow-inner">
-                      <IconComponent className="w-5 h-5" />
-                    </div>
+            const IconComponent =
+              iconMap[card.icon as keyof typeof iconMap] || Clock;
+            const stepNumber = String(i + 1).padStart(2, "0");
 
-                    <h3 className="text-lg font-bold text-navy mb-3 tracking-tight">
-                      {card.title}
-                    </h3>
-                    <p className="text-[15px] text-muted leading-relaxed">
-                      {card.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
+            return (
+              <article key={i} className="p-6 sm:p-8 flex flex-col gap-4 min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-bold tracking-widest text-muted-light tabular-nums">
+                    {stepNumber}
+                  </span>
+                  <IconComponent
+                    className="w-5 h-5 text-teal-dark shrink-0"
+                    strokeWidth={1.75}
+                    aria-hidden="true"
+                  />
+                </div>
+                <h3 className="text-lg font-bold text-navy leading-snug">
+                  {card.title}
+                </h3>
+                <p className="text-sm sm:text-[15px] text-muted leading-relaxed">
+                  {card.description}
+                </p>
+              </article>
             );
           })}
-        </motion.div>
+        </div>
 
-        {/* Transition CTA */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeInUp}
-          className="mt-14 lg:mt-16 flex flex-col sm:flex-row items-center gap-4 justify-center"
-        >
-          <p className="text-muted text-base">
+        <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <p className="text-sm sm:text-base text-muted">
             {siteContent.problem.transition}
           </p>
           <button
-            onClick={() => handleScroll("#services")}
-            className="group inline-flex items-center gap-2 text-teal font-semibold text-sm hover:gap-3 transition-all cursor-pointer"
+            type="button"
+            onClick={handleScrollToServices}
+            className="min-h-11 inline-flex items-center gap-2 text-sm font-semibold text-teal-dark hover:text-navy transition-colors cursor-pointer shrink-0 self-start sm:self-auto"
           >
-            {siteContent.problem.transitionCta}
-            <ArrowRight className="w-4 h-4" />
+            <span>{siteContent.problem.transitionCta}</span>
+            <ArrowRight className="w-4 h-4 shrink-0" strokeWidth={1.75} />
           </button>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

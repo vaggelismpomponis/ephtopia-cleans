@@ -53,31 +53,6 @@ function formatAbsoluteTime(iso: string): string {
   });
 }
 
-function getInitials(email: string | null): string {
-  if (!email) return '?';
-  const parts = email.split('@')[0].split(/[._-]/);
-  return parts
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase() ?? '')
-    .join('');
-}
-
-const AVATAR_COLORS = [
-  'from-teal-400 to-teal-600',
-  'from-violet-400 to-violet-600',
-  'from-amber-400 to-amber-600',
-  'from-rose-400 to-rose-600',
-  'from-sky-400 to-sky-600',
-  'from-emerald-400 to-emerald-600',
-];
-
-function avatarColor(email: string | null): string {
-  if (!email) return AVATAR_COLORS[0];
-  let hash = 0;
-  for (let i = 0; i < email.length; i++) hash = (hash * 31 + email.charCodeAt(i)) | 0;
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
-
 const SECTION_LABELS: Record<string, string> = {
   hero: 'Hero',
   problem: 'Πρόβλημα',
@@ -100,126 +75,96 @@ function truncate(value: string | null, max = 120): string {
 
 // ── Components ─────────────────────────────────────────────────
 
-function StatCard({ label, value, icon: Icon, color }: {
+function StatCard({ label, value, icon: Icon, toneClass }: {
   label: string;
   value: string | number;
   icon: React.ElementType;
-  color: string;
+  toneClass: string;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex items-center gap-3">
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${color}`}>
-        <Icon className="w-5 h-5" />
-      </div>
-      <div>
-        <div className="text-xl font-bold text-slate-800 leading-none">{value}</div>
-        <div className="text-xs text-slate-400 mt-0.5">{label}</div>
+    <div className="bg-white rounded-xl border border-border p-4 flex items-center gap-3 min-w-0">
+      <Icon className={`w-5 h-5 shrink-0 ${toneClass}`} strokeWidth={1.75} aria-hidden="true" />
+      <div className="min-w-0">
+        <div className="text-xl font-bold text-navy leading-none tabular-nums">{value}</div>
+        <div className="text-xs text-muted mt-1">{label}</div>
       </div>
     </div>
   );
 }
 
 function UserStatCard({ stat, rank }: { stat: UserChangeStat; rank: number }) {
-  const color = avatarColor(stat.email);
   return (
-    <div className="flex items-center gap-3 bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm">
-      <div
-        className={`w-8 h-8 rounded-full bg-gradient-to-br ${color} flex items-center justify-center shrink-0`}
-      >
-        <span className="text-white text-[10px] font-bold">{getInitials(stat.email)}</span>
-      </div>
+    <div className="flex items-center gap-3 bg-white rounded-xl border border-border px-4 py-3 min-w-0">
+      <span className="text-xs font-bold text-muted-light tabular-nums shrink-0">#{rank}</span>
       <div className="flex-1 min-w-0">
-        <div className="text-xs font-semibold text-slate-700 truncate">{stat.email}</div>
-        <div className="text-[10px] text-slate-400">#{rank} πιο ενεργός</div>
+        <div className="text-xs sm:text-sm font-semibold text-navy truncate">{stat.email}</div>
       </div>
-      <div className="text-sm font-bold text-teal shrink-0">{stat.count}</div>
+      <div className="text-sm font-bold text-teal-dark tabular-nums shrink-0">{stat.count}</div>
     </div>
   );
 }
 
 function EntryCard({ entry }: { entry: ChangeLogEntry }) {
   const isSave = entry.action === 'save';
-  const color = avatarColor(entry.changed_by_email);
   const hasValueChange = entry.old_value !== null || entry.new_value !== null;
 
   return (
-    <div className="relative flex gap-4 group">
-      {/* Timeline dot + line */}
-      <div className="flex flex-col items-center shrink-0">
-        <div
-          className={`w-8 h-8 rounded-full bg-gradient-to-br ${color} flex items-center justify-center shadow-sm border-2 border-white z-10`}
-        >
-          <span className="text-white text-[10px] font-bold">
-            {getInitials(entry.changed_by_email)}
+    <div className="bg-white border border-border rounded-xl p-4 mb-3">
+      <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          {isSave ? (
+            <span className="inline-flex items-center gap-1 bg-warm-white text-teal-dark border border-border rounded-md px-2 py-0.5 text-xs font-semibold">
+              <Save className="w-3 h-3" strokeWidth={1.75} />
+              Αποθήκευση
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-md px-2 py-0.5 text-xs font-semibold">
+              <RotateCcw className="w-3 h-3" strokeWidth={1.75} />
+              Επαναφορά
+            </span>
+          )}
+          <span className="text-xs text-muted flex items-center gap-1">
+            <FileText className="w-3.5 h-3.5 text-muted-light" strokeWidth={1.75} />
+            <span className="font-semibold text-navy">{sectionLabel(entry.section)}</span>
+            <span className="text-muted-light">/</span>
+            <span className="font-mono text-xs text-muted">{entry.content_key}</span>
           </span>
         </div>
-        <div className="w-px flex-1 bg-slate-200 mt-1" />
+
+        <div className="flex items-center gap-1.5 text-xs text-muted shrink-0 tabular-nums" title={formatAbsoluteTime(entry.changed_at)}>
+          <Clock className="w-3.5 h-3.5" strokeWidth={1.75} />
+          <span>{formatRelativeTime(entry.changed_at)}</span>
+          <span aria-hidden="true">·</span>
+          <span>{formatAbsoluteTime(entry.changed_at)}</span>
+        </div>
       </div>
 
-      {/* Card */}
-      <div className="flex-1 bg-white border border-slate-200 rounded-xl p-4 shadow-sm mb-3 group-hover:border-teal/30 group-hover:shadow-md transition-all duration-200">
-        {/* Header row */}
-        <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2 flex-wrap">
-            {/* Action badge */}
-            {isSave ? (
-              <span className="inline-flex items-center gap-1 bg-teal/10 text-teal border border-teal/20 rounded-full px-2.5 py-0.5 text-[11px] font-semibold">
-                <Save className="w-3 h-3" />
-                Αποθήκευση
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-600 border border-amber-200 rounded-full px-2.5 py-0.5 text-[11px] font-semibold">
-                <RotateCcw className="w-3 h-3" />
-                Επαναφορά
-              </span>
-            )}
-            {/* Section breadcrumb */}
-            <span className="text-xs text-slate-500 flex items-center gap-1">
-              <FileText className="w-3 h-3 text-slate-400" />
-              <span className="font-medium text-slate-700">{sectionLabel(entry.section)}</span>
-              <span className="text-slate-300">/</span>
-              <span className="font-mono text-[11px] text-slate-500">{entry.content_key}</span>
-            </span>
-          </div>
-
-          {/* Timestamps */}
-          <div className="flex items-center gap-1.5 text-[11px] text-slate-400 shrink-0" title={formatAbsoluteTime(entry.changed_at)}>
-            <Clock className="w-3 h-3" />
-            <span>{formatRelativeTime(entry.changed_at)}</span>
-            <span className="text-slate-300">·</span>
-            <span>{formatAbsoluteTime(entry.changed_at)}</span>
-          </div>
-        </div>
-
-        {/* Who */}
-        <div className="flex items-center gap-1.5 mb-3 text-xs text-slate-500">
-          <User className="w-3 h-3 text-slate-400" />
-          <span className="font-medium text-slate-600">{entry.changed_by_email ?? 'Άγνωστος'}</span>
-        </div>
-
-        {/* Before / After diff */}
-        {hasValueChange && (
-          <div className="space-y-1.5 text-[11px]">
-            {entry.old_value !== null && (
-              <div className="bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">
-                <span className="text-rose-400 font-semibold mr-2">−  Πριν:</span>
-                <span className="text-rose-700 font-mono break-all">{truncate(entry.old_value)}</span>
-              </div>
-            )}
-            {entry.new_value !== null && (
-              <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
-                <span className="text-emerald-500 font-semibold mr-2">+  Μετά:</span>
-                <span className="text-emerald-700 font-mono break-all">{truncate(entry.new_value)}</span>
-              </div>
-            )}
-            {entry.action === 'reset' && (
-              <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-500 italic">
-                Επαναφορά στην προεπιλεγμένη τιμή
-              </div>
-            )}
-          </div>
-        )}
+      <div className="flex items-center gap-1.5 mb-3 text-xs text-muted">
+        <User className="w-3.5 h-3.5 text-muted-light" strokeWidth={1.75} />
+        <span className="font-medium text-navy">{entry.changed_by_email ?? 'Άγνωστος'}</span>
       </div>
+
+      {hasValueChange && (
+        <div className="space-y-1.5 text-xs">
+          {entry.old_value !== null && (
+            <div className="bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">
+              <span className="text-rose-600 font-semibold mr-2">− Πριν:</span>
+              <span className="text-rose-800 font-mono break-all">{truncate(entry.old_value)}</span>
+            </div>
+          )}
+          {entry.new_value !== null && (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
+              <span className="text-emerald-700 font-semibold mr-2">+ Μετά:</span>
+              <span className="text-emerald-900 font-mono break-all">{truncate(entry.new_value)}</span>
+            </div>
+          )}
+          {entry.action === 'reset' && (
+            <div className="bg-warm-white border border-border rounded-lg px-3 py-2 text-muted italic">
+              Επαναφορά στην προεπιλεγμένη τιμή
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -323,12 +268,12 @@ export function HistoryTimeline({
   return (
     <div className="space-y-6">
       {/* Summary stat cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <StatCard
           label="Σύνολο αλλαγών"
           value={totalCount}
           icon={History}
-          color="bg-teal/10 text-teal"
+          toneClass="text-teal-dark"
         />
         <StatCard
           label="Αποθηκεύσεις"
@@ -336,7 +281,7 @@ export function HistoryTimeline({
             ? totalCount - entries.filter((e) => e.action === 'reset').length
             : '—'}
           icon={Save}
-          color="bg-emerald-50 text-emerald-600"
+          toneClass="text-teal-dark"
         />
         <StatCard
           label="Επαναφορές"
@@ -344,7 +289,7 @@ export function HistoryTimeline({
             ? entries.filter((e) => e.action === 'reset').length
             : '—'}
           icon={RotateCcw}
-          color="bg-amber-50 text-amber-600"
+          toneClass="text-amber-600"
         />
       </div>
 

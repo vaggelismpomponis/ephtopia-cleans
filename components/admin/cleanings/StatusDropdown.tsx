@@ -121,7 +121,7 @@ export function StatusDropdown({
         type="button"
         disabled={disabled}
         onClick={handleToggle}
-        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-98 select-none ${
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer select-none ${
           currentConfig.bg
         } ${currentConfig.text} ${currentConfig.border} ${
           disabled ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-95'
@@ -155,7 +155,7 @@ export function StatusDropdown({
                   zIndex: 99999,
                 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-white/98 backdrop-blur-md border border-slate-200 rounded-2xl shadow-xl p-1.5 space-y-1 text-slate-900"
+                className="bg-white border border-border rounded-xl shadow-xs p-1.5 space-y-1 text-navy"
               >
                 <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 mb-1">
                   Αλλαγή Κατάστασης

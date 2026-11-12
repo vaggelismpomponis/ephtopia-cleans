@@ -23,43 +23,41 @@ export default async function ApplicationsPage({ searchParams }: PageProps) {
 
   return (
     <div>
-      {/* Header */}
       <div className="mb-8">
         <Link
           href="/admin/jobs"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-teal mb-4 transition-colors group"
+          className="inline-flex items-center gap-1.5 min-h-9 text-sm text-muted hover:text-navy mb-3 transition-colors"
         >
-          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          Πίσω στις αγγελίες
+          <ArrowLeft className="w-4 h-4 shrink-0" strokeWidth={1.75} />
+          <span>Πίσω στις αγγελίες</span>
         </Link>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+          <div className="min-w-0">
+            <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-1 block">
               Διαχείριση CVs
-            </div>
-            <h2 className="text-2xl font-bold text-slate-800 font-heading">
+            </span>
+            <h2 className="text-2xl font-bold text-navy font-heading">
               {currentJob ? `Αιτήσεις: ${currentJob.title}` : 'Όλες οι Αιτήσεις'}
             </h2>
-            <p className="text-slate-500 text-sm mt-1">
+            <p className="text-muted text-sm mt-1">
               {applications.length === 0
                 ? 'Δεν υπάρχουν αιτήσεις.'
                 : `${applications.length} ${applications.length === 1 ? 'αίτηση' : 'αιτήσεις'}`}
             </p>
           </div>
 
-          {/* Job Position Filter */}
           {jobs.length > 0 && (
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-slate-500 shrink-0 flex items-center gap-1">
-                <Briefcase className="w-3.5 h-3.5 text-slate-400" />
-                Θέση:
-              </span>
+              <label htmlFor="job-filter" className="text-xs font-semibold text-muted shrink-0 flex items-center gap-1.5">
+                <Briefcase className="w-4 h-4 text-teal-dark shrink-0" strokeWidth={1.75} />
+                <span>Θέση:</span>
+              </label>
               <form method="GET" className="inline-block">
                 <select
+                  id="job-filter"
                   name="job"
                   defaultValue={selectedJobId || 'all'}
-                  // Auto submit on change via JS in server component or client handler
-                  className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-teal focus:ring-2 focus:ring-teal/20 transition-all cursor-pointer"
+                  className="min-h-10 bg-white border border-border rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-navy focus:outline-none focus:border-teal focus:ring-2 focus:ring-teal/20 transition-colors cursor-pointer"
                 >
                   <option value="all">Όλες οι θέσεις ({jobs.reduce((acc, j) => acc + j.application_count, 0)})</option>
                   {jobs.map((j) => (

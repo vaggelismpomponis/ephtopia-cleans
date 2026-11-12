@@ -20,20 +20,19 @@ export default async function EditJobPage({ params }: PageProps) {
 
   return (
     <div>
-      {/* Header */}
       <div className="mb-8">
         <Link
           href="/admin/jobs"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-teal mb-4 transition-colors group"
+          className="inline-flex items-center gap-1.5 min-h-9 text-sm text-muted hover:text-navy mb-3 transition-colors"
         >
-          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          Πίσω στις αγγελίες
+          <ArrowLeft className="w-4 h-4 shrink-0" strokeWidth={1.75} />
+          <span>Πίσω στις αγγελίες</span>
         </Link>
-        <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+        <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-1 block">
           Επεξεργασία
-        </div>
-        <h2 className="text-2xl font-bold text-slate-800 font-heading">{job.title}</h2>
-        <p className="text-slate-500 text-sm mt-1">
+        </span>
+        <h2 className="text-2xl font-bold text-navy font-heading">{job.title}</h2>
+        <p className="text-muted text-sm mt-1">
           Επεξεργαστείτε τα στοιχεία της αγγελίας και πατήστε Αποθήκευση.
         </p>
       </div>

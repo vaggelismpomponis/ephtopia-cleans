@@ -114,29 +114,30 @@ export function ArrayEditor({
         {items.map((item, index) => (
           <div
             key={index}
-            className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm"
+            className="bg-white border border-border rounded-xl overflow-hidden"
           >
-            <div
-              className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-slate-50 transition-colors"
-              onClick={() => setExpanded(expanded === index ? null : index)}
-            >
-              <span className="text-sm font-medium text-slate-700">
-                {item[fields[0]?.key] || `Item ${index + 1}`}
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={(e) => requestDelete(e, index)}
-                  className="text-slate-300 hover:text-red-500 transition-colors p-1 rounded"
-                  title="Delete item"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+            <div className="flex items-center justify-between px-4 py-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setExpanded(expanded === index ? null : index)}
+                className="flex-1 flex items-center justify-between min-h-10 text-left text-sm font-medium text-navy hover:text-teal-dark transition-colors cursor-pointer"
+              >
+                <span>{item[fields[0]?.key] || `Item ${index + 1}`}</span>
                 {expanded === index ? (
-                  <ChevronUp className="w-4 h-4 text-slate-400" />
+                  <ChevronUp className="w-4 h-4 text-muted shrink-0" />
                 ) : (
-                  <ChevronDown className="w-4 h-4 text-slate-400" />
+                  <ChevronDown className="w-4 h-4 text-muted shrink-0" />
                 )}
-              </div>
+              </button>
+              <button
+                type="button"
+                onClick={(e) => requestDelete(e, index)}
+                className="min-h-9 min-w-9 inline-flex items-center justify-center text-muted-light hover:text-destructive transition-colors rounded-lg cursor-pointer"
+                title="Διαγραφή"
+                aria-label="Διαγραφή"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
             </div>
 
             {expanded === index && (

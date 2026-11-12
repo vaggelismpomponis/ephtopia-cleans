@@ -107,60 +107,54 @@ export default function ApplicationsList({ initialApplications }: ApplicationsLi
 
   if (applications.length === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center shadow-sm">
-        <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-          <User className="w-7 h-7 text-slate-400" />
-        </div>
-        <p className="text-slate-500 text-sm">Δεν υπάρχουν αιτήσεις για αυτή τη θέση.</p>
+      <div className="bg-white border border-border rounded-xl p-10 text-center">
+        <User className="w-7 h-7 text-muted-light mx-auto mb-3" strokeWidth={1.75} />
+        <p className="text-muted text-sm">Δεν υπάρχουν αιτήσεις για αυτή τη θέση.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Top Controls: Search Bar & Filter Tabs */}
       <div className="space-y-4">
-        {/* Search Bar */}
         <div className="relative max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-muted-light absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" strokeWidth={1.75} />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Αναζήτηση με όνομα, email ή τηλέφωνο..."
-            className="w-full pl-10 pr-9 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-teal focus:ring-2 focus:ring-teal/20 transition-all"
+            className="w-full min-h-11 pl-10 pr-9 py-2 bg-white border border-border rounded-lg text-sm text-navy placeholder:text-muted-light focus:outline-none focus:border-teal focus:ring-2 focus:ring-teal/20 transition-colors"
           />
           {searchQuery && (
             <button
+              type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+              aria-label="Καθαρισμός αναζήτησης"
+              className="absolute right-2 top-1/2 -translate-y-1/2 min-h-9 min-w-9 inline-flex items-center justify-center text-muted hover:text-navy transition-colors cursor-pointer"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4" strokeWidth={1.75} />
             </button>
           )}
         </div>
 
-        {/* Filter Tabs */}
-        <div className="flex flex-wrap gap-2 pb-2 border-b border-slate-200">
+        <div className="flex flex-wrap gap-2 pb-3 border-b border-border">
           {filters.map((f) => {
             const count = getCount(f.key);
             const isActive = activeFilter === f.key;
             return (
               <button
                 key={f.key}
+                type="button"
                 onClick={() => setActiveFilter(f.key)}
-                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`inline-flex items-center gap-2 min-h-10 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors border cursor-pointer ${
                   isActive
-                    ? 'bg-navy text-white shadow-sm'
-                    : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                    ? 'bg-navy text-white border-navy'
+                    : 'bg-warm-white text-navy hover:bg-white border-border'
                 }`}
               >
                 <span>{f.label}</span>
-                <span
-                  className={`px-1.5 py-0.5 rounded-full text-[10px] ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
-                  }`}
-                >
+                <span className={`tabular-nums text-[11px] ${isActive ? 'text-slate-300' : 'text-muted'}`}>
                   {count}
                 </span>
               </button>
@@ -170,8 +164,8 @@ export default function ApplicationsList({ initialApplications }: ApplicationsLi
       </div>
 
       {filteredApplications.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center shadow-sm">
-          <p className="text-slate-500 text-sm">
+        <div className="bg-white border border-border rounded-xl p-8 text-center">
+          <p className="text-muted text-sm">
             {searchQuery
               ? 'Δεν βρέθηκε καμία αίτηση που να ταιριάζει με τα κριτήρια αναζήτησης.'
               : 'Δεν βρέθηκαν αιτήσεις με τη συγκεκριμένη κατάσταση.'}
@@ -188,30 +182,21 @@ export default function ApplicationsList({ initialApplications }: ApplicationsLi
             return (
               <div
                 key={app.id}
-                className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm hover:border-slate-300 transition-all"
+                className="bg-white border border-border rounded-xl p-5 sm:p-6 hover:border-navy/30 transition-colors"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
-                  {/* Left: Applicant info */}
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-teal/10 rounded-xl flex items-center justify-center shrink-0">
-                      <span className="text-sm font-bold text-teal">
-                        {app.full_name.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <div>
-                      <div className="font-bold text-slate-800 text-sm flex items-center flex-wrap gap-2">
-                        <span>{app.full_name}</span>
-                        {app.job_title && (
-                          <span className="text-[11px] font-semibold text-teal bg-teal/10 px-2 py-0.5 rounded-md border border-teal/20">
-                            {app.job_title}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-slate-400">Αίτηση #{i + 1}</div>
+                  <div className="min-w-0">
+                    <div className="flex items-center flex-wrap gap-2">
+                      <span className="text-xs font-bold text-muted-light tabular-nums">#{i + 1}</span>
+                      <span className="font-bold text-navy text-base">{app.full_name}</span>
+                      {app.job_title && (
+                        <span className="text-xs font-semibold text-teal-dark bg-warm-white px-2 py-0.5 rounded-md border border-border">
+                          {app.job_title}
+                        </span>
+                      )}
                     </div>
                   </div>
 
-                  {/* Right: Status selector + Date */}
                   <div className="flex flex-wrap items-center gap-3">
                     <div className="relative inline-flex items-center">
                       <StatusIcon className={`w-3.5 h-3.5 absolute left-3 pointer-events-none ${statusConfig.text}`} />
@@ -219,7 +204,7 @@ export default function ApplicationsList({ initialApplications }: ApplicationsLi
                         value={currentStatus}
                         disabled={isUpdating}
                         onChange={(e) => handleStatusChange(app.id, e.target.value as ApplicationStatus)}
-                        className={`appearance-none pl-8 pr-7 py-1.5 rounded-full text-xs font-semibold border transition-all duration-150 cursor-pointer ${statusConfig.bg} ${statusConfig.hoverBg} ${statusConfig.text} ${statusConfig.border} ${statusConfig.hoverBorder} hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-teal/30 disabled:opacity-50`}
+                        className={`appearance-none min-h-9 pl-8 pr-7 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${statusConfig.bg} ${statusConfig.hoverBg} ${statusConfig.text} ${statusConfig.border} ${statusConfig.hoverBorder} focus:outline-none focus:ring-2 focus:ring-teal/30 disabled:opacity-50`}
                       >
                         {Object.entries(STATUS_LABELS).map(([key, cfg]) => (
                           <option key={key} value={key} className="bg-white text-slate-800">

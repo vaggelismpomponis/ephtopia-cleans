@@ -36,6 +36,7 @@ export default async function HotelServicesPage() {
         subtitle={pageContent.subtitle}
         items={pageContent.items}
         showQuickNav
+        defaultIcon="Building2"
       />
       <Footer siteContent={siteContent} />
       <CookieNotice />

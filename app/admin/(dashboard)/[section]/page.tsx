@@ -32,13 +32,12 @@ export default async function SectionEditorPage(props: PageProps<'/admin/[sectio
 
   return (
     <SectionEditorLayout>
-      {/* Page header */}
       <div className="mb-8">
-        <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+        <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-1 block">
           Επεξεργασία
-        </div>
-        <h2 className="text-2xl font-bold text-slate-800 font-heading">{sectionTitles[section]}</h2>
-        <p className="text-slate-500 text-sm mt-1">
+        </span>
+        <h2 className="text-2xl font-bold text-navy font-heading">{sectionTitles[section]}</h2>
+        <p className="text-muted text-sm mt-1">
           Οι αλλαγές αποθηκεύονται μεμονωμένα. Κάνε κλικ Αποθήκευση σε κάθε πεδίο μετά την επεξεργασία.
         </p>
       </div>
@@ -64,8 +63,8 @@ export default async function SectionEditorPage(props: PageProps<'/admin/[sectio
 
 function EditorCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm w-full min-w-0">
-      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 sm:mb-5 pb-3 border-b border-slate-100">
+    <div className="bg-white border border-border rounded-xl p-4 sm:p-6 w-full min-w-0">
+      <h3 className="text-xs font-bold text-teal-dark uppercase tracking-widest mb-4 sm:mb-5 pb-3 border-b border-border">
         {title}
       </h3>
       <div className="space-y-4 sm:space-y-5">{children}</div>

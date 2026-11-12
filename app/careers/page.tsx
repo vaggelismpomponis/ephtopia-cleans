@@ -30,35 +30,6 @@ export default async function CareersPage() {
               μοιράζονται τις ίδιες αξίες.
             </p>
           </div>
-
-          <dl className="mt-10 pt-8 border-t border-border grid grid-cols-2 sm:flex sm:items-center gap-6 sm:gap-12">
-            <div className="min-w-0">
-              <dd className="text-2xl sm:text-3xl font-bold text-navy tracking-tight tabular-nums">
-                {jobs.length}
-              </dd>
-              <dt className="text-xs font-medium uppercase tracking-wider text-muted mt-1">
-                Ανοιχτές Θέσεις
-              </dt>
-            </div>
-            <div className="hidden sm:block w-px h-10 bg-border" aria-hidden="true" />
-            <div className="min-w-0">
-              <dd className="text-2xl sm:text-3xl font-bold text-navy tracking-tight tabular-nums">
-                50+
-              </dd>
-              <dt className="text-xs font-medium uppercase tracking-wider text-muted mt-1">
-                Εργαζόμενοι
-              </dt>
-            </div>
-            <div className="hidden sm:block w-px h-10 bg-border" aria-hidden="true" />
-            <div className="col-span-2 sm:col-span-1 min-w-0">
-              <dd className="text-2xl sm:text-3xl font-bold text-navy tracking-tight tabular-nums">
-                2026
-              </dd>
-              <dt className="text-xs font-medium uppercase tracking-wider text-muted mt-1">
-                Ίδρυση
-              </dt>
-            </div>
-          </dl>
         </div>
       </section>
 

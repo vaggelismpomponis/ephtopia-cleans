@@ -199,7 +199,7 @@ export function CustomSelect({
                   zIndex: 99999,
                 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-white/98 backdrop-blur-md border border-slate-200 rounded-2xl shadow-xl overflow-hidden p-1.5 space-y-1 text-slate-900 max-h-72 flex flex-col"
+                className="bg-white border border-border rounded-xl shadow-xs overflow-hidden p-1.5 space-y-1 text-navy max-h-72 flex flex-col"
               >
                 {/* Search Header if searchable */}
                 {searchable && (

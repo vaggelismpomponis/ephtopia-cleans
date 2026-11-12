@@ -22,12 +22,10 @@ export default async function HistoryPage({
   // Super-admin guard
   if (currentUser.email !== SUPER_ADMIN_EMAIL) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-        <div className="w-16 h-16 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mb-5">
-          <ShieldX className="w-8 h-8 text-red-400" />
-        </div>
-        <h1 className="text-xl font-bold text-slate-800 mb-2">Δεν έχετε πρόσβαση</h1>
-        <p className="text-slate-500 text-sm max-w-xs">
+      <div className="flex flex-col items-center justify-center min-h-[60dvh] text-center px-4">
+        <ShieldX className="w-7 h-7 text-destructive mb-3" strokeWidth={1.75} aria-hidden="true" />
+        <h1 className="text-xl font-bold text-navy mb-2">Δεν έχετε πρόσβαση</h1>
+        <p className="text-muted text-sm max-w-xs">
           Το ιστορικό αλλαγών είναι διαθέσιμο μόνο για τον κύριο διαχειριστή του συστήματος.
         </p>
       </div>
@@ -56,16 +54,14 @@ export default async function HistoryPage({
 
   return (
     <div>
-      {/* Page header */}
       <div className="mb-8">
-        <div className="inline-flex items-center gap-2 bg-teal/10 border border-teal/20 rounded-full px-4 py-1.5 mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-teal animate-pulse" />
-          <span className="text-xs font-semibold text-teal tracking-wide">Μόνο για Super Admin</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 font-heading mb-2">
+        <span className="text-xs font-bold uppercase tracking-widest text-teal-dark mb-2 block">
+          Μόνο για Super Admin
+        </span>
+        <h1 className="text-2xl sm:text-3xl font-bold text-navy font-heading mb-2">
           Ιστορικό Αλλαγών
         </h1>
-        <p className="text-slate-500 text-sm">
+        <p className="text-muted text-sm">
           Πλήρες αρχείο όλων των αλλαγών περιεχομένου — ποιος, πότε και τι άλλαξε.
         </p>
       </div>

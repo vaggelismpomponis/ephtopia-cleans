@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, Layers, SprayCan, Building2 } from "lucide-react";
+import { ChevronDown, Layers, Home, Building2 } from "lucide-react";
 
 export const SERVICE_SUB_ITEMS = [
   {
@@ -14,7 +14,7 @@ export const SERVICE_SUB_ITEMS = [
     label: "Υπηρεσίες για Airbnb",
     href: "/services/airbnb",
     description: "Καθαρισμός, σεντόνια & διαχείριση",
-    icon: SprayCan,
+    icon: Home,
   },
   {
     label: "Υπηρεσίες για Ξενοδοχεία",

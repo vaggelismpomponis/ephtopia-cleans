@@ -96,7 +96,9 @@ export function FieldEditor({
             </button>
           )}
           {isDirty && (
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" title="Μη αποθηκευμένες αλλαγές" />
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-600" title="Μη αποθηκευμένες αλλαγές">
+              Μη αποθηκευμένο
+            </span>
           )}
         </div>
       </div>

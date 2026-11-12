@@ -1,7 +1,6 @@
 import Link from "next/link";
 import {
-  Sparkles,
-  SprayCan,
+  Home,
   Camera,
   CalendarRange,
   Building2,
@@ -13,7 +12,14 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/sections/Footer";
 import CookieNotice from "@/components/CookieNotice";
 
-const iconMap = { Sparkles, SprayCan, Camera, CalendarRange, Building2 };
+const iconMap = {
+  Sparkles: Home,
+  SprayCan: Home,
+  Home,
+  Camera,
+  CalendarRange,
+  Building2,
+};
 
 export default async function ServicesLandingPage() {
   const { siteContent } = await getContent();
@@ -44,7 +50,7 @@ export default async function ServicesLandingPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {categories.map((cat, idx) => {
                 const IconComponent =
-                  iconMap[cat.icon as keyof typeof iconMap] || Sparkles;
+                  iconMap[cat.icon as keyof typeof iconMap] || Home;
                 const num = String(idx + 1).padStart(2, "0");
 
                 return (

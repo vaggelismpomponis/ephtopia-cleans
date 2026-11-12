@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import {
   SERVICE_ICON_MAP,
   ServiceSectionBlock,
@@ -14,6 +14,7 @@ interface ServiceDetailLayoutProps {
   items: readonly ServiceDetailItem[];
   showQuickNav?: boolean;
   heroCtaLabel?: string;
+  defaultIcon?: keyof typeof SERVICE_ICON_MAP;
 }
 
 export function ServiceDetailLayout({
@@ -24,6 +25,7 @@ export function ServiceDetailLayout({
   items,
   showQuickNav = false,
   heroCtaLabel,
+  defaultIcon = "Building2",
 }: ServiceDetailLayoutProps) {
   return (
     <main>
@@ -70,8 +72,8 @@ export function ServiceDetailLayout({
                 {items.map((item) => {
                   const IconComp =
                     SERVICE_ICON_MAP[
-                    item.icon as keyof typeof SERVICE_ICON_MAP
-                    ] || Sparkles;
+                      item.icon as keyof typeof SERVICE_ICON_MAP
+                    ] || SERVICE_ICON_MAP[defaultIcon];
                   return (
                     <a
                       key={item.slug}
@@ -99,6 +101,7 @@ export function ServiceDetailLayout({
           service={service}
           index={index}
           isAlternating={items.length > 1}
+          defaultIcon={defaultIcon}
         />
       ))}
     </main>

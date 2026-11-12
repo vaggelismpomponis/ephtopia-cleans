@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import {
-  Sparkles,
-  SprayCan,
+  Home,
   ShieldCheck,
   Camera,
   CalendarRange,
@@ -15,8 +14,9 @@ import type { SiteContent } from "@/lib/get-content";
 import { useLivePreview } from "@/components/LivePreviewProvider";
 
 const iconMap = {
-  Sparkles,
-  SprayCan,
+  Sparkles: Home,
+  SprayCan: Home,
+  Home,
   ShieldCheck,
   Camera,
   CalendarRange,
@@ -64,7 +64,7 @@ export default function Services({ siteContent: initialContent }: ServicesProps)
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {siteContent.services.items.map((service, i) => {
             const IconComponent =
-              iconMap[service.icon as keyof typeof iconMap] || Sparkles;
+              iconMap[service.icon as keyof typeof iconMap] || Home;
             const num = String(i + 1).padStart(2, "0");
             const href =
               "href" in service

@@ -120,7 +120,6 @@ export default function Logo({
           <span className={cn("font-extrabold transition-colors duration-200", secondWordColor)}>
             {secondWord}
           </span>
-          <span className="w-1.5 h-1.5 rounded-full bg-teal shrink-0 animate-pulse" />
         </div>
 
         {showSubtitle && (

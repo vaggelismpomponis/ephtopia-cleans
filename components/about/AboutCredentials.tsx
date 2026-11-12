@@ -1,6 +1,6 @@
 import {
   ShieldCheck,
-  Sparkles,
+  Award,
   Clock,
   Camera,
   CheckCircle2,
@@ -10,7 +10,7 @@ import type { SiteContent } from "@/lib/get-content";
 
 const iconMap = {
   ShieldCheck,
-  Sparkles,
+  Sparkles: Award,
   Clock,
   Camera,
 };
@@ -46,7 +46,7 @@ export function AboutCredentials({ about }: { about: SiteContent["about"] }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border border-border rounded-xl bg-warm-white divide-y sm:divide-y-0 sm:divide-x divide-border">
             {about.values.map((value, i) => {
               const IconComponent =
-                iconMap[value.icon as keyof typeof iconMap] || Sparkles;
+                iconMap[value.icon as keyof typeof iconMap] || ShieldCheck;
               const num = String(i + 1).padStart(2, "0");
 
               return (

@@ -71,18 +71,16 @@ export function JobsTable({ jobs: initialJobs }: JobsTableProps) {
 
   if (jobs.length === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center shadow-sm">
-        <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-          <Users className="w-7 h-7 text-slate-400" />
-        </div>
-        <h3 className="font-bold text-slate-700 font-heading mb-2">Δεν υπάρχουν αγγελίες</h3>
-        <p className="text-slate-400 text-sm mb-6">Δημιουργήστε την πρώτη σας αγγελία εργασίας.</p>
+      <div className="bg-white border border-border rounded-xl p-10 text-center">
+        <Users className="w-7 h-7 text-muted-light mx-auto mb-3" strokeWidth={1.75} />
+        <h3 className="font-bold text-navy font-heading mb-1">Δεν υπάρχουν αγγελίες</h3>
+        <p className="text-muted text-sm mb-6">Δημιουργήστε την πρώτη σας αγγελία εργασίας.</p>
         <Link
           href="/admin/jobs/new"
-          className="inline-flex items-center gap-2 bg-teal hover:bg-teal-dark text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all"
+          className="inline-flex items-center gap-2 min-h-10 bg-teal-dark hover:bg-navy text-white font-semibold px-5 py-2.5 rounded-lg text-sm transition-colors"
         >
-          <Plus className="w-4 h-4" />
-          Νέα Αγγελία
+          <Plus className="w-4 h-4" strokeWidth={1.75} />
+          <span>Νέα Αγγελία</span>
         </Link>
       </div>
     );
@@ -100,41 +98,41 @@ export function JobsTable({ jobs: initialJobs }: JobsTableProps) {
           return (
             <div
               key={job.id}
-              className={`bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-3 ${!job.is_active ? 'opacity-60' : ''}`}
+              className={`bg-white border border-border rounded-xl p-4 space-y-3 ${!job.is_active ? 'opacity-65' : ''}`}
             >
-              {/* Top row: Title + Active Badge */}
               <div className="flex items-start justify-between gap-2">
-                <div>
+                <div className="min-w-0">
                   <Link
                     href={`/admin/applications?job=${job.id}`}
-                    className="font-bold text-slate-800 text-base hover:text-teal transition-colors block"
+                    className="font-bold text-navy text-base hover:text-teal-dark transition-colors block"
                   >
                     {job.title}
                   </Link>
-                  <span className="inline-block text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full mt-1">
+                  <span className="inline-block text-xs font-medium text-muted bg-warm-white border border-border px-2 py-0.5 rounded-md mt-1">
                     {employmentTypeLabel[job.employment_type] ?? job.employment_type}
                   </span>
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => handleToggle(job.id, job.is_active)}
                   disabled={isToggling}
-                  className={`relative shrink-0 inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full transition-all border ${
+                  className={`shrink-0 inline-flex items-center gap-1.5 min-h-9 text-xs font-semibold px-2.5 py-1 rounded-md transition-colors border cursor-pointer ${
                     job.is_active
-                      ? 'bg-teal/10 text-teal border-teal/20'
-                      : 'bg-slate-100 text-slate-400 border-slate-200'
+                      ? 'bg-warm-white text-teal-dark border-border'
+                      : 'bg-warm-white text-muted border-border'
                   }`}
                 >
                   {isToggling ? (
-                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : job.is_active ? (
-                    <Eye className="w-3 h-3" />
+                    <Eye className="w-3.5 h-3.5" strokeWidth={1.75} />
                   ) : (
-                    <EyeOff className="w-3 h-3" />
+                    <EyeOff className="w-3.5 h-3.5" strokeWidth={1.75} />
                   )}
-                  {job.is_active ? 'Ενεργή' : 'Ανενεργή'}
+                  <span>{job.is_active ? 'Ενεργή' : 'Ανενεργή'}</span>
                   {fb && (
-                    <span className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ${fb === 'ok' ? 'bg-teal' : 'bg-red-400'} animate-ping`} />
+                    <span className={`w-1.5 h-1.5 rounded-full ${fb === 'ok' ? 'bg-teal-dark' : 'bg-destructive'}`} />
                   )}
                 </button>
               </div>
@@ -200,11 +198,11 @@ export function JobsTable({ jobs: initialJobs }: JobsTableProps) {
       </div>
 
       {/* ── Desktop Table View (>= sm) ── */}
-      <div className="hidden sm:block bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+      <div className="hidden sm:block bg-white border border-border rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-widest">
+              <tr className="bg-warm-white border-b border-border text-xs font-bold text-muted uppercase tracking-widest">
                 <th className="py-3 px-5 font-bold">Θέση / Τμήμα</th>
                 <th className="py-3 px-4 text-center font-bold">Τύπος</th>
                 <th className="py-3 px-4 text-center font-bold">Αιτήσεις</th>
@@ -250,7 +248,7 @@ export function JobsTable({ jobs: initialJobs }: JobsTableProps) {
                     </td>
 
                     <td className="py-4 px-4 text-center whitespace-nowrap">
-                      <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+                      <span className="text-xs font-medium text-muted bg-warm-white border border-border px-2.5 py-1 rounded-md">
                         {employmentTypeLabel[job.employment_type] ?? job.employment_type}
                       </span>
                     </td>
@@ -258,35 +256,36 @@ export function JobsTable({ jobs: initialJobs }: JobsTableProps) {
                     <td className="py-4 px-4 text-center whitespace-nowrap">
                       <Link
                         href={`/admin/applications?job=${job.id}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-lg bg-teal/10 text-teal hover:bg-teal hover:text-white border border-teal/20 transition-all shadow-sm"
+                        className="inline-flex items-center gap-1.5 min-h-9 text-xs font-semibold px-3 py-1.5 rounded-lg bg-warm-white text-teal-dark hover:bg-teal-dark hover:text-white border border-border transition-colors tabular-nums"
                         title="Προβολή Αιτήσεων"
                       >
-                        <Users className="w-3.5 h-3.5" />
+                        <Users className="w-3.5 h-3.5" strokeWidth={1.75} />
                         <span>{job.application_count} {job.application_count === 1 ? 'Αίτηση' : 'Αιτήσεις'}</span>
                       </Link>
                     </td>
 
                     <td className="py-4 px-4 text-center whitespace-nowrap">
                       <button
+                        type="button"
                         onClick={() => handleToggle(job.id, job.is_active)}
                         disabled={isToggling}
                         title={job.is_active ? 'Απενεργοποίηση' : 'Ενεργοποίηση'}
-                        className={`relative inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full transition-all border ${
+                        className={`inline-flex items-center gap-1.5 min-h-9 text-xs font-semibold px-2.5 py-1 rounded-md transition-colors border cursor-pointer ${
                           job.is_active
-                            ? 'bg-teal/10 text-teal border-teal/20 hover:bg-teal/20'
-                            : 'bg-slate-100 text-slate-400 border-slate-200 hover:bg-slate-200'
+                            ? 'bg-warm-white text-teal-dark border-border hover:border-navy/40'
+                            : 'bg-warm-white text-muted border-border hover:border-navy/40'
                         }`}
                       >
                         {isToggling ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
                         ) : job.is_active ? (
-                          <Eye className="w-3 h-3" />
+                          <Eye className="w-3.5 h-3.5" strokeWidth={1.75} />
                         ) : (
-                          <EyeOff className="w-3 h-3" />
+                          <EyeOff className="w-3.5 h-3.5" strokeWidth={1.75} />
                         )}
-                        {job.is_active ? 'Ενεργή' : 'Ανενεργή'}
+                        <span>{job.is_active ? 'Ενεργή' : 'Ανενεργή'}</span>
                         {fb && (
-                          <span className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ${fb === 'ok' ? 'bg-teal' : 'bg-red-400'} animate-ping`} />
+                          <span className={`w-1.5 h-1.5 rounded-full ${fb === 'ok' ? 'bg-teal-dark' : 'bg-destructive'}`} />
                         )}
                       </button>
                     </td>

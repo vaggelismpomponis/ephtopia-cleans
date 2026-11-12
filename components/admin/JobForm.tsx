@@ -57,8 +57,8 @@ const departments = [
 
 function FieldCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm w-full">
-      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 pb-3 border-b border-slate-100">
+    <div className="bg-white border border-border rounded-xl p-4 sm:p-6 w-full">
+      <h3 className="text-xs font-bold text-teal-dark uppercase tracking-widest mb-4 pb-3 border-b border-border">
         {title}
       </h3>
       <div className="space-y-4">{children}</div>
@@ -79,17 +79,17 @@ function FormField({
 }) {
   return (
     <div>
-      <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-        {label} {required && <span className="text-red-400">*</span>}
+      <label className="block text-sm font-medium text-navy mb-1.5">
+        {label} {required && <span className="text-destructive">*</span>}
       </label>
       {children}
-      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+      {error && <p className="mt-1 text-xs text-destructive" role="alert">{error}</p>}
     </div>
   );
 }
 
 const inputCls =
-  'w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal/60 transition';
+  'w-full min-h-11 border border-border rounded-lg px-3.5 py-2.5 text-sm text-navy placeholder:text-muted-light focus:outline-none focus:ring-2 focus:ring-teal/20 focus:border-teal transition-colors bg-white';
 
 export function JobForm({ initialData, onSubmit, submitLabel = 'Αποθήκευση' }: JobFormProps) {
   const router = useRouter();
@@ -179,7 +179,7 @@ export function JobForm({ initialData, onSubmit, submitLabel = 'Αποθήκευ
 
         <div className="grid sm:grid-cols-2 gap-4">
           <FormField label="Email Επικοινωνίας" error={errors.contact_email?.message} required>
-            <input {...register('contact_email')} type="email" placeholder="hr@ephtopia.gr" className={inputCls} />
+            <input {...register('contact_email')} type="email" inputMode="email" autoCapitalize="none" placeholder="hr@ephtopia.eu" className={inputCls} />
           </FormField>
           <FormField label="Προθεσμία Αίτησης" error={errors.deadline?.message}>
             <input {...register('deadline')} type="date" className={inputCls} />
@@ -259,21 +259,21 @@ export function JobForm({ initialData, onSubmit, submitLabel = 'Αποθήκευ
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-3 pt-2">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="flex items-center gap-2 bg-teal hover:bg-teal-dark text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-all duration-200 disabled:opacity-70 shadow-sm hover:shadow-md"
-        >
-          {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          {submitLabel}
-        </button>
+      <div className="flex flex-col-reverse sm:flex-row sm:items-center gap-3 pt-2">
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+          className="min-h-11 px-5 py-2.5 rounded-lg border border-border bg-white text-sm font-semibold text-muted hover:text-navy hover:border-navy/40 transition-colors cursor-pointer"
         >
           Ακύρωση
+        </button>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="min-h-11 inline-flex items-center justify-center gap-2 bg-teal-dark hover:bg-navy text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors disabled:opacity-50 cursor-pointer"
+        >
+          {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" strokeWidth={1.75} />}
+          <span>{submitLabel}</span>
         </button>
       </div>
     </form>

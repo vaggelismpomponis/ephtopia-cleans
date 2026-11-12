@@ -58,24 +58,6 @@ export default function Hero({ siteContent: initialContent }: HeroProps) {
                 <ArrowRight className="w-4 h-4 shrink-0" strokeWidth={1.75} />
               </button>
             </div>
-
-            <dl className="mt-10 pt-8 border-t border-border grid grid-cols-2 sm:flex sm:items-center gap-6 sm:gap-10">
-              {siteContent.hero.trustStats.map((stat, index) => (
-                <div key={stat.label} className="flex items-center gap-6 sm:gap-10 min-w-0">
-                  <div className="min-w-0">
-                    <dd className="text-2xl sm:text-3xl font-bold text-navy tracking-tight tabular-nums">
-                      {stat.value}
-                    </dd>
-                    <dt className="text-xs font-medium uppercase tracking-wider text-muted mt-1">
-                      {stat.label}
-                    </dt>
-                  </div>
-                  {index < siteContent.hero.trustStats.length - 1 && (
-                    <div className="hidden sm:block w-px h-10 bg-border shrink-0" aria-hidden="true" />
-                  )}
-                </div>
-              ))}
-            </dl>
           </div>
 
           <div className="lg:col-span-5 min-w-0">

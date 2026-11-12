@@ -36,6 +36,7 @@ export default async function AirbnbServicesPage() {
         subtitle={pageContent.subtitle}
         items={pageContent.items}
         showQuickNav
+        defaultIcon="BrushCleaning"
       />
       <Footer siteContent={siteContent} />
       <CookieNotice />

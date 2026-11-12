@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {
-  Sparkles,
-  SprayCan,
+  BrushCleaning,
+  Home,
   Camera,
   CalendarRange,
   Building2,
@@ -10,8 +10,10 @@ import {
 } from "lucide-react";
 
 export const SERVICE_ICON_MAP = {
-  Sparkles,
-  SprayCan,
+  Sparkles: BrushCleaning,
+  SprayCan: BrushCleaning,
+  BrushCleaning,
+  Home,
   Camera,
   CalendarRange,
   Building2,
@@ -42,15 +44,18 @@ interface ServiceSectionBlockProps {
   service: ServiceDetailItem;
   index: number;
   isAlternating?: boolean;
+  defaultIcon?: keyof typeof SERVICE_ICON_MAP;
 }
 
 export function ServiceSectionBlock({
   service,
   index,
   isAlternating = false,
+  defaultIcon = "Building2",
 }: ServiceSectionBlockProps) {
   const IconComp =
-    SERVICE_ICON_MAP[service.icon as keyof typeof SERVICE_ICON_MAP] || Sparkles;
+    SERVICE_ICON_MAP[service.icon as keyof typeof SERVICE_ICON_MAP] ||
+    SERVICE_ICON_MAP[defaultIcon];
   const isEven = isAlternating && index % 2 === 1;
   const num = String(index + 1).padStart(2, "0");
 

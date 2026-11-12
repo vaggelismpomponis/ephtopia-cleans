@@ -84,10 +84,6 @@ export function ConfirmModal({
 
   const isDanger = variant === 'danger';
 
-  const iconBg = isDanger
-    ? 'bg-red-50 text-red-500'
-    : 'bg-amber-100 text-amber-600';
-
   const hasConfirmInput = !!requiredConfirmText;
   const confirmDisabled = hasConfirmInput && inputValue !== requiredConfirmText;
 
@@ -103,45 +99,44 @@ export function ConfirmModal({
     <AnimatePresence>
       {open && (
         <>
-          {/* Backdrop */}
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100]"
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 bg-navy/50 z-[100]"
             onClick={isLoading ? undefined : onCancel}
             aria-hidden="true"
           />
 
-          {/* Dialog */}
           <motion.div
             key="dialog"
-            initial={{ opacity: 0, scale: 0.93, y: 16 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.93, y: 16 }}
-            transition={{ duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.16 }}
             role="dialog"
             aria-modal="true"
             aria-labelledby="confirm-modal-title"
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 pointer-events-none"
           >
-            <div className="pointer-events-auto bg-white rounded-3xl shadow-2xl border border-slate-200/90 w-full max-w-sm p-6 relative">
-              {/* Close ✕ */}
+            <div className="pointer-events-auto bg-white rounded-xl border border-border w-full max-w-sm p-6 relative">
               <button
+                type="button"
                 onClick={onCancel}
                 disabled={isLoading}
-                className="absolute top-4 right-4 p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors disabled:opacity-40"
+                className="absolute top-3 right-3 min-h-9 min-w-9 inline-flex items-center justify-center rounded-lg text-muted hover:text-navy hover:bg-warm-white transition-colors disabled:opacity-40 cursor-pointer"
                 aria-label="Άκυρο"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4" strokeWidth={1.75} />
               </button>
 
-              {/* Icon */}
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${iconBg}`}>
-                <Trash2 className="w-5 h-5" />
-              </div>
+              <Trash2
+                className={`w-5 h-5 mb-3 ${isDanger ? 'text-destructive' : 'text-amber-600'}`}
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
 
               {/* Content */}
               <h2

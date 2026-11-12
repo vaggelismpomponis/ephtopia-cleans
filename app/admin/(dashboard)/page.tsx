@@ -14,7 +14,6 @@ import {
   Briefcase,
   Home,
   Building2,
-  Calendar,
   Sparkles,
 } from 'lucide-react';
 

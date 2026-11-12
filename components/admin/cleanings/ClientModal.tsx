@@ -1,19 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
   User,
-  Phone,
-  Mail,
   Building,
   Home,
   CheckCircle2,
   Loader2,
   AlertTriangle,
-  MapPin,
-  Key,
 } from 'lucide-react';
 import type { CleaningClient, CleaningCategory } from '@/lib/types/cleanings';
 import { saveClient } from '@/app/actions/cleanings';
@@ -55,7 +51,11 @@ export function ClientModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const modalResetKey = `${isOpen}-${clientToEdit?.id ?? 'new'}-${defaultCategory}`;
+  const [prevModalResetKey, setPrevModalResetKey] = useState(modalResetKey);
+
+  if (prevModalResetKey !== modalResetKey) {
+    setPrevModalResetKey(modalResetKey);
     if (clientToEdit) {
       setCategory(clientToEdit.category);
       setName(clientToEdit.name);
@@ -80,7 +80,7 @@ export function ClientModal({
       setPropEntryInstructions('');
       setPropCleaningInstructions('');
     }
-  }, [clientToEdit, defaultCategory, isOpen]);
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Users,
   Plus,
@@ -14,24 +13,15 @@ import {
   Mail,
   MapPin,
   Key,
-  Layers,
-  Sparkles,
   Pencil,
   Trash2,
-  Calendar,
-  ChevronRight,
   ExternalLink,
-  Copy,
-  Check,
   Building2,
   CalendarCheck,
-  Briefcase,
 } from 'lucide-react';
 import type {
   CleaningClient,
   CleaningProperty,
-  CleaningRecord,
-  CleaningCategory,
 } from '@/lib/types/cleanings';
 import { deleteClient, deleteProperty } from '@/app/actions/cleanings';
 import { ConfirmModal } from '@/components/admin/ConfirmModal';

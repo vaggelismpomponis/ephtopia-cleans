@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useActionState } from 'react';
 import { loginAction } from '@/app/actions/auth';
-import { Eye, EyeOff, Loader2, Lock, Mail, AlertCircle, ShieldCheck, ArrowLeft, Globe } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Lock, Mail, AlertCircle, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Logo from '@/components/Logo';

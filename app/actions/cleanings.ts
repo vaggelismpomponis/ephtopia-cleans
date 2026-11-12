@@ -27,7 +27,7 @@ async function readFallbackStore(): Promise<FallbackStore> {
   try {
     const raw = await fs.readFile(STORE_PATH, 'utf8');
     return JSON.parse(raw);
-  } catch (err) {
+  } catch {
     return { clients: [], cleanings: [] };
   }
 }
@@ -60,7 +60,7 @@ export async function getClients(category?: CleaningCategory): Promise<CleaningC
     if (!error && data) {
       return data as CleaningClient[];
     }
-  } catch (err) {
+  } catch {
     // Supabase table missing or connection error - fallback
   }
 
@@ -92,7 +92,7 @@ export async function getClient(id: string): Promise<CleaningClient | null> {
     if (!error && data) {
       return data as CleaningClient;
     }
-  } catch (err) {
+  } catch {
     // fallback
   }
 
@@ -179,7 +179,7 @@ export async function saveClient(
         return { success: true, data: created as CleaningClient };
       }
     }
-  } catch (err) {
+  } catch {
     // fallback
   }
 
@@ -252,7 +252,7 @@ export async function deleteClient(id: string): Promise<ActionResult> {
       revalidatePath('/admin/cleanings');
       return { success: true };
     }
-  } catch (err) {
+  } catch {
     // fallback
   }
 
@@ -327,7 +327,7 @@ export async function saveProperty(data: Partial<CleaningProperty>): Promise<Act
         return { success: true, data: created as CleaningProperty };
       }
     }
-  } catch (err) {
+  } catch {
     // fallback
   }
 
@@ -391,7 +391,7 @@ export async function deleteProperty(id: string): Promise<ActionResult> {
       revalidatePath('/admin/cleanings');
       return { success: true };
     }
-  } catch (err) {
+  } catch {
     // fallback
   }
 
@@ -430,7 +430,7 @@ export async function getCleanings(
     if (!error && data) {
       return data as CleaningRecord[];
     }
-  } catch (err) {
+  } catch {
     // fallback
   }
 
@@ -461,7 +461,7 @@ export async function getCleaning(id: string): Promise<CleaningRecord | null> {
       .maybeSingle();
 
     if (!error && data) return data as CleaningRecord;
-  } catch (err) {
+  } catch {
     // fallback
   }
 
@@ -539,7 +539,7 @@ export async function saveCleaning(data: Partial<CleaningRecord>): Promise<Actio
         return { success: true, data: created as CleaningRecord };
       }
     }
-  } catch (err) {
+  } catch {
     // fallback
   }
 
@@ -626,7 +626,7 @@ export async function updateCleaningStatus(id: string, status: CleaningStatus): 
       revalidatePath('/admin/cleanings');
       return { success: true };
     }
-  } catch (err) {
+  } catch {
     // fallback
   }
 
@@ -652,7 +652,7 @@ export async function deleteCleaning(id: string): Promise<ActionResult> {
       revalidatePath('/admin/cleanings');
       return { success: true };
     }
-  } catch (err) {
+  } catch {
     // fallback
   }
 

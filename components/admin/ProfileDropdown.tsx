@@ -62,6 +62,12 @@ export function ProfileDropdown({ user, isSuperAdmin: propIsSuperAdmin }: Profil
   const [isPending, startTransition] = useTransition();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
+
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setIsOpen(false);
+  }
 
   const isSuperAdmin = propIsSuperAdmin ?? (user.email === SUPER_ADMIN_EMAIL);
   const initials = getInitials(user.email, user.user_metadata?.full_name || user.user_metadata?.name);
@@ -92,11 +98,6 @@ export function ProfileDropdown({ user, isSuperAdmin: propIsSuperAdmin }: Profil
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
-
-  // Close on route navigation
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
 
   const handleLogout = () => {
     startTransition(async () => {

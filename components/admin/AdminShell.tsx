@@ -17,15 +17,16 @@ interface AdminShellProps {
 export function AdminShell({ user, children }: AdminShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
   const isSuperAdmin = user.email === SUPER_ADMIN_EMAIL;
   const isEditorPage = !!pathname.match(/^\/admin\/(hero|problem|services|testimonials|pricing|faq|lead-form|footer)$/);
   const isCleaningsPage = pathname.startsWith('/admin/cleanings');
   const isWidePage = isEditorPage || isCleaningsPage;
 
-  // Close mobile drawer on route change
-  useEffect(() => {
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setMobileOpen(false);
-  }, [pathname]);
+  }
 
   // Prevent body scroll when drawer is open
   useEffect(() => {

@@ -7,7 +7,6 @@ import {
   Printer,
   Pencil,
   Trash2,
-  ExternalLink,
   Check,
   Copy,
 } from 'lucide-react';

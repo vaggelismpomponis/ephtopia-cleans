@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { saveContent, resetContent } from '@/app/actions/content';
 import { Check, RotateCcw, Loader2, AlertCircle } from 'lucide-react';
 
@@ -30,13 +30,15 @@ export function FieldEditor({
   maxLength,
 }: FieldEditorProps) {
   const [value, setValue] = useState(currentValue);
+  const [prevCurrentValue, setPrevCurrentValue] = useState(currentValue);
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
+  if (prevCurrentValue !== currentValue) {
+    setPrevCurrentValue(currentValue);
     setValue(currentValue);
-  }, [currentValue]);
+  }
 
   const isDirty = value !== currentValue;
   const isDefault = value === defaultValue;

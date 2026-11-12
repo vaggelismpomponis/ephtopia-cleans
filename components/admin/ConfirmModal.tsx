@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, Copy, Check } from 'lucide-react';
@@ -39,25 +39,29 @@ export function ConfirmModal({
   confirmInputLabel,
   isLoading = false,
 }: ConfirmModalProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const [inputValue, setInputValue] = useState('');
   const [copied, setCopied] = useState(false);
+  const [prevOpen, setPrevOpen] = useState(open);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Reset input whenever modal opens/closes
-  useEffect(() => {
+  if (prevOpen !== open) {
+    setPrevOpen(open);
     if (!open) {
       setInputValue('');
       setCopied(false);
-    } else {
-      // Auto-focus input on next frame so animation can start first
-      setTimeout(() => inputRef.current?.focus(), 80);
     }
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    const timer = setTimeout(() => inputRef.current?.focus(), 80);
+    return () => clearTimeout(timer);
   }, [open]);
 
   const handleCopy = () => {
@@ -93,7 +97,7 @@ export function ConfirmModal({
 
   const confirmBtnDisabled = 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-60';
 
-  if (!mounted || typeof window === 'undefined') return null;
+  if (!isClient) return null;
 
   return createPortal(
     <AnimatePresence>

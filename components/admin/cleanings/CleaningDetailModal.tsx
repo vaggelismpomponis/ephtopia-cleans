@@ -7,28 +7,20 @@ import {
   Printer,
   Pencil,
   Trash2,
-  MapPin,
   Key,
   Clock,
   Calendar,
-  User,
   Truck,
   Sparkles,
   AlertTriangle,
-  Layers,
-  Phone,
   Euro,
-  CheckCircle2,
   Copy,
   Check,
   ExternalLink,
   Navigation,
 } from 'lucide-react';
 import type { CleaningRecord, CleaningStatus } from '@/lib/types/cleanings';
-import {
-  CLEANING_STATUS_CONFIG,
-  CLEANING_PRIORITY_CONFIG,
-} from '@/lib/types/cleanings';
+import { CLEANING_PRIORITY_CONFIG } from '@/lib/types/cleanings';
 import { updateCleaningStatus, deleteCleaning } from '@/app/actions/cleanings';
 import { ConfirmModal } from '@/components/admin/ConfirmModal';
 
@@ -58,7 +50,6 @@ export function CleaningDetailModal({
 
   if (!isOpen || !cleaning) return null;
 
-  const statusConfig = CLEANING_STATUS_CONFIG[cleaning.status];
   const priorityConfig = CLEANING_PRIORITY_CONFIG[cleaning.priority];
 
   const handleStatusChange = async (newStatus: CleaningStatus) => {

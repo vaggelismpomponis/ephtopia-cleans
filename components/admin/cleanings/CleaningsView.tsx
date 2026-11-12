@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import type {
   CleaningRecord,
@@ -26,6 +26,34 @@ interface CleaningsViewProps {
   clients: CleaningClient[];
 }
 
+const VIEW_MODE_KEY = 'ephtopia-cleanings-view-mode';
+let viewModeListeners: Array<() => void> = [];
+
+function subscribeViewMode(callback: () => void) {
+  viewModeListeners = [...viewModeListeners, callback];
+  const onStorage = (e: StorageEvent) => {
+    if (e.key === VIEW_MODE_KEY) callback();
+  };
+  window.addEventListener('storage', onStorage);
+  return () => {
+    viewModeListeners = viewModeListeners.filter((l) => l !== callback);
+    window.removeEventListener('storage', onStorage);
+  };
+}
+
+function getViewModeSnapshot(): 'table' | 'grid' {
+  try {
+    const saved = localStorage.getItem(VIEW_MODE_KEY);
+    return saved === 'table' || saved === 'grid' ? saved : 'grid';
+  } catch {
+    return 'grid';
+  }
+}
+
+function getViewModeServerSnapshot(): 'table' | 'grid' {
+  return 'grid';
+}
+
 export function CleaningsView({
   category,
   initialCleanings,
@@ -34,24 +62,16 @@ export function CleaningsView({
   const router = useRouter();
   const [cleanings, setCleanings] = useState<CleaningRecord[]>(initialCleanings);
 
-  // View mode: 'table' or 'grid' (defaults to 'grid' - cards)
-  const [viewMode, setViewMode] = useState<'table' | 'grid'>('grid');
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('ephtopia-cleanings-view-mode');
-      if (saved === 'table' || saved === 'grid') {
-        setViewMode(saved);
-      }
-    } catch {
-      // Ignore in private browsing / SSR
-    }
-  }, []);
+  const viewMode = useSyncExternalStore(
+    subscribeViewMode,
+    getViewModeSnapshot,
+    getViewModeServerSnapshot
+  );
 
   const handleSetViewMode = (mode: 'table' | 'grid') => {
-    setViewMode(mode);
     try {
-      localStorage.setItem('ephtopia-cleanings-view-mode', mode);
+      localStorage.setItem(VIEW_MODE_KEY, mode);
+      viewModeListeners.forEach((l) => l());
     } catch {
       // Ignore
     }

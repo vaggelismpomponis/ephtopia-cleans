@@ -1,13 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
-  MapPin,
   Key,
-  Layers,
-  Sparkles,
   CheckCircle2,
   Loader2,
   AlertTriangle,
@@ -48,7 +45,11 @@ export function PropertyModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const modalResetKey = `${isOpen}-${propertyToEdit?.id ?? 'new'}`;
+  const [prevModalResetKey, setPrevModalResetKey] = useState(modalResetKey);
+
+  if (prevModalResetKey !== modalResetKey) {
+    setPrevModalResetKey(modalResetKey);
     if (propertyToEdit) {
       setName(propertyToEdit.name);
       setAddress(propertyToEdit.address);
@@ -66,7 +67,7 @@ export function PropertyModal({
       setEntryInstructions('');
       setCleaningInstructions('');
     }
-  }, [propertyToEdit, isOpen]);
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

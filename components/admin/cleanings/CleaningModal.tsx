@@ -1,26 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
-  Calendar,
-  Clock,
   User,
-  MapPin,
   Key,
-  Truck,
-  Sparkles,
   AlertTriangle,
   Building,
   Home,
   CheckCircle2,
   Loader2,
-  Plus,
-  Minus,
-  Layers,
-  Euro,
-  FileText,
 } from 'lucide-react';
 import type {
   CleaningRecord,
@@ -103,12 +93,15 @@ export function CleaningModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const modalResetKey = `${isOpen}-${cleaningToEdit?.id ?? 'new'}-${defaultCategory}`;
+  const [prevModalResetKey, setPrevModalResetKey] = useState(modalResetKey);
+
   // Filter clients by category
   const categoryClients = clients.filter((c) => c.category === category);
   const selectedClient = clients.find((c) => c.id === clientId);
 
-  // Pre-fill or reset state
-  useEffect(() => {
+  if (prevModalResetKey !== modalResetKey) {
+    setPrevModalResetKey(modalResetKey);
     if (cleaningToEdit) {
       setCategory(cleaningToEdit.category);
       setClientId(cleaningToEdit.client_id || '');
@@ -154,7 +147,7 @@ export function CleaningModal({
       setSpecialNotes('');
       setPrice('');
     }
-  }, [cleaningToEdit, defaultCategory, isOpen]);
+  }
 
   // Handle client selection
   const handleClientSelect = (id: string) => {

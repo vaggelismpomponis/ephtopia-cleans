@@ -18,6 +18,7 @@ import {
   Loader2,
   Search,
   X,
+  type LucideIcon,
 } from 'lucide-react';
 
 interface ApplicationsListProps {
@@ -36,7 +37,7 @@ function formatDate(dateStr: string) {
   });
 }
 
-const STATUS_ICONS: Record<ApplicationStatus, any> = {
+const STATUS_ICONS: Record<ApplicationStatus, LucideIcon> = {
   new: Clock,
   viewed: Eye,
   rejected: XCircle,
@@ -48,7 +49,7 @@ export default function ApplicationsList({ initialApplications }: ApplicationsLi
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   const handleStatusChange = (appId: string, newStatus: ApplicationStatus) => {
     setUpdatingId(appId);

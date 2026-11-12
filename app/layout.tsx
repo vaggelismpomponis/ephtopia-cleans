@@ -9,17 +9,16 @@ const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin", "greek"],
   display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
 });
 
 const sourceSans = Source_Sans_3({
   variable: "--font-source-sans",
   subsets: ["latin", "greek"],
   display: "swap",
-  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ephtopia-cleans.gr"),
   title: "Καθαρισμός Airbnb | Ephtopia Cleans — Χωρίς Στρες",
   description:
     "Επαγγελματικός καθαρισμός Airbnb και αλλαγή κλινοσκεπασμάτων στην Ελλάδα. Εξειδικευμένο προσωπικό, φωτογραφική τεκμηρίωση, αυτόματος συντονισμός.",
@@ -85,7 +84,7 @@ export default function RootLayout({
           suppressHydrationWarning
         />
       </head>
-      <body className="min-h-screen flex flex-col">{children}</body>
+      <body className="min-h-dvh flex flex-col bg-background text-foreground">{children}</body>
     </html>
   );
 }

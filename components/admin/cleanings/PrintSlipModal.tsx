@@ -33,7 +33,6 @@ export function PrintSlipModal({
   cleaning,
   dailyCleanings,
   selectedDate,
-  category = 'all',
 }: PrintSlipModalProps) {
   // If cleaning is passed, default to single; otherwise daily
   const [printMode, setPrintMode] = useState<'single' | 'daily'>(

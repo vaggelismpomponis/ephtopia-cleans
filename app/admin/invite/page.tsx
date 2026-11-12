@@ -20,32 +20,42 @@ export default function InvitePage() {
   const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
-    const supabase = createClient();
+    let active = true;
 
-    // Parse the URL hash — Supabase puts tokens there for the invite flow
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    const accessToken = params.get('access_token');
-    const refreshToken = params.get('refresh_token');
-    const type = params.get('type'); // 'invite' or 'recovery'
+    async function establishInviteSession() {
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      const accessToken = params.get('access_token');
+      const refreshToken = params.get('refresh_token');
 
-    if (!accessToken || !refreshToken) {
-      setErrorMsg('Μη έγκυρος σύνδεσμος πρόσκλησης. Ζητήστε νέα πρόσκληση.');
-      setStatus('error');
-      return;
+      if (!accessToken || !refreshToken) {
+        if (active) {
+          setErrorMsg('Μη έγκυρος σύνδεσμος πρόσκλησης. Ζητήστε νέα πρόσκληση.');
+          setStatus('error');
+        }
+        return;
+      }
+
+      const supabase = createClient();
+      const { error } = await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      });
+
+      if (!active) return;
+
+      if (error) {
+        setErrorMsg(`Σφάλμα: ${error.message}`);
+        setStatus('error');
+      } else {
+        setStatus('set-password');
+      }
     }
 
-    // Exchange the tokens to establish a session
-    supabase.auth
-      .setSession({ access_token: accessToken, refresh_token: refreshToken })
-      .then(({ error }) => {
-        if (error) {
-          setErrorMsg(`Σφάλμα: ${error.message}`);
-          setStatus('error');
-        } else {
-          setStatus('set-password');
-        }
-      });
+    void establishInviteSession();
+    return () => {
+      active = false;
+    };
   }, []);
 
   const handleSetPassword = async (e: React.FormEvent) => {

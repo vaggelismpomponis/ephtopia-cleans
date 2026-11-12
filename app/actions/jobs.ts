@@ -79,7 +79,6 @@ export async function getJob(id: string): Promise<Job | null> {
 
 export async function getAllJobs(): Promise<JobWithApplicationCount[]> {
   await requireAdmin();
-  const supabase = await createClient();
 
   // Use service-role to bypass the RLS "only active" policy for public reads
   const adminClient = createAdminClient();
@@ -275,8 +274,9 @@ export async function getApplications(jobId?: string): Promise<JobApplication[]>
   if (error || !data) return [];
 
   // Generate signed URLs for CV downloads (valid for 1 hour)
+  type JobApplicationRow = JobApplication & { jobs?: { title?: string } | null };
   const applications = await Promise.all(
-    data.map(async (row: any) => {
+    (data as JobApplicationRow[]).map(async (row) => {
       const app: JobApplication = {
         ...row,
         job_title: row.jobs?.title,

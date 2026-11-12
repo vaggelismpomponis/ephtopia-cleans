@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -76,64 +76,89 @@ interface SidebarProps {
   isSuperAdmin?: boolean;
 }
 
+const DEFAULT_OPEN_GROUPS: Record<string, boolean> = {
+  'Καθαρισμοί': true,
+  'Περιεχόμενο': false, // Collapsed by default as requested
+  'Λειτουργίες': true,
+};
+
+const SIDEBAR_STORAGE_KEY = 'ephtopia-sidebar-groups';
+let sidebarListeners: Array<() => void> = [];
+let cachedRawGroups: string | null | undefined;
+let cachedParsedGroups: Record<string, boolean> = DEFAULT_OPEN_GROUPS;
+
+function subscribeSidebarGroups(callback: () => void) {
+  sidebarListeners = [...sidebarListeners, callback];
+  const onStorage = (e: StorageEvent) => {
+    if (e.key === SIDEBAR_STORAGE_KEY) callback();
+  };
+  window.addEventListener('storage', onStorage);
+  return () => {
+    sidebarListeners = sidebarListeners.filter((l) => l !== callback);
+    window.removeEventListener('storage', onStorage);
+  };
+}
+
+function getSidebarGroupsSnapshot(): Record<string, boolean> {
+  try {
+    const raw = localStorage.getItem(SIDEBAR_STORAGE_KEY);
+    if (raw === cachedRawGroups) return cachedParsedGroups;
+    cachedRawGroups = raw;
+    cachedParsedGroups = raw
+      ? { ...DEFAULT_OPEN_GROUPS, ...(JSON.parse(raw) as Record<string, boolean>) }
+      : DEFAULT_OPEN_GROUPS;
+    return cachedParsedGroups;
+  } catch {
+    return DEFAULT_OPEN_GROUPS;
+  }
+}
+
+function getSidebarGroupsServerSnapshot(): Record<string, boolean> {
+  return DEFAULT_OPEN_GROUPS;
+}
+
 export function Sidebar({ mobileOpen = false, onClose, isSuperAdmin = false }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
-
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    'Καθαρισμοί': true,
-    'Περιεχόμενο': false, // Collapsed by default as requested
-    'Λειτουργίες': true,
-  });
-
-  // Restore saved state from localStorage if available
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('ephtopia-sidebar-groups');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        setOpenGroups((prev) => ({ ...prev, ...parsed }));
-      }
-    } catch {
-      // Ignore
-    }
-  }, []);
-
-  // Auto-expand group if current route is inside it
-  useEffect(() => {
-    navGroups.forEach((group) => {
-      const isCurrentGroupActive = group.items.some((item) => isActive(item.href, item.exact));
-      if (isCurrentGroupActive) {
-        setOpenGroups((prev) => {
-          if (prev[group.label]) return prev;
-          const next = { ...prev, [group.label]: true };
-          try {
-            localStorage.setItem('ephtopia-sidebar-groups', JSON.stringify(next));
-          } catch {
-            // Ignore
-          }
-          return next;
-        });
-      }
-    });
-  }, [pathname]);
-
-  const toggleGroup = (groupLabel: string) => {
-    setOpenGroups((prev) => {
-      const next = { ...prev, [groupLabel]: !prev[groupLabel] };
-      try {
-        localStorage.setItem('ephtopia-sidebar-groups', JSON.stringify(next));
-      } catch {
-        // Ignore
-      }
-      return next;
-    });
-  };
-
+  const [routeOverrides, setRouteOverrides] = useState<Record<string, boolean>>({});
+  const [prevPathname, setPrevPathname] = useState(pathname);
 
   const isActive = (href: string, exact?: boolean) => {
     if (exact) return pathname === href;
     return pathname === href || pathname.startsWith(href + '/');
+  };
+
+  const storedGroups = useSyncExternalStore(
+    subscribeSidebarGroups,
+    getSidebarGroupsSnapshot,
+    getSidebarGroupsServerSnapshot
+  );
+
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    const activeGroup = navGroups.find((group) =>
+      group.items.some((item) => isActive(item.href, item.exact))
+    );
+    if (activeGroup && !(storedGroups[activeGroup.label] ?? true)) {
+      setRouteOverrides((prev) => ({ ...prev, [activeGroup.label]: true }));
+    }
+  }
+
+  const openGroups: Record<string, boolean> = {
+    ...storedGroups,
+    ...routeOverrides,
+  };
+
+  const toggleGroup = (groupLabel: string) => {
+    const nextValue = !(openGroups[groupLabel] ?? true);
+    const next = { ...openGroups, [groupLabel]: nextValue };
+    setRouteOverrides((prev) => ({ ...prev, [groupLabel]: nextValue }));
+    try {
+      localStorage.setItem(SIDEBAR_STORAGE_KEY, JSON.stringify(next));
+      sidebarListeners.forEach((l) => l());
+    } catch {
+      // Ignore
+    }
   };
 
   const navContent = (showLabels: boolean) => (
